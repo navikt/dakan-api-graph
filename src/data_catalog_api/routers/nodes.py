@@ -1,6 +1,4 @@
-import math
 from typing import List
-
 from data_catalog_api import store
 from data_catalog_api.models.nodes import Node, NodeResponse
 from fastapi import APIRouter
@@ -30,8 +28,14 @@ async def get_nodes_by_label(label: str, skip: int=0, limit: int=None):
     return response
 
 
-# @router.get("/linkednodes/{id}", response_model=List[Node])
-# async def get_linked_nodes(id: str, edge_label)
+@router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node])
+async def get_out_nodes(node_id: str, edge_label: str):
+    return await store.get_out_nodes(node_id, edge_label)
+
+
+@router.get("/node/in/{node_id}/{edge_label}", response_model=List[Node])
+async def get_in_nodes(node_id: str, edge_label: str):
+    return await store.get_in_nodes(node_id, edge_label)
 
 
 @router.put("/node")

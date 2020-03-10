@@ -2,6 +2,7 @@ import logging
 import os
 import ast
 
+from data_catalog_api.models.edges import Edge
 from data_catalog_api.models.nodes import Node
 from dotenv import load_dotenv
 from fastapi import status
@@ -45,11 +46,6 @@ def submit(query, message=None, params=None):
         print(f"No results returned from query: {query}")
 
 
-async def get_count():   
-    res = submit("g.V().count()")
-    return res
-
-
 async def get_node_by_id(node_id: str):
     res = submit(f"g.V('{node_id}')")
 
@@ -79,3 +75,21 @@ async def upsert_node(node: Node):
 
     res = submit(query)
     return res
+
+
+async def get_out_nodes(node_id: str, edge_label: str):
+    return submit(f"g.V('{node_id}').out('{edge_label}')")
+
+
+async def get_in_nodes(node_id: str, edge_label: str):
+    return submit(f"g.V('{node_id}').in('{edge_label}')")
+
+
+async def get_edge_by_id(id: str):
+    query = f"g.E('{id}')"
+    return submit(query)
+
+
+async def create_edge(edge: Edge):
+    query = f"g.V('{edge.inV}').addE('{edge.label}').to(g.V('{edge.outV}'))"
+    return submit(query)

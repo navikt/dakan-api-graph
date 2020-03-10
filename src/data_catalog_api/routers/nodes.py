@@ -30,8 +30,8 @@ async def get_nodes_by_label(label: str, skip: int=0, limit: int=None):
     return response
 
 
-@router.get("/linkednodes/{id}", response_model=List[Node])
-async def get_linked_nodes(id: str, edge_label)
+# @router.get("/linkednodes/{id}", response_model=List[Node])
+# async def get_linked_nodes(id: str, edge_label)
 
 
 @router.put("/node")

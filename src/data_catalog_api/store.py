@@ -1,25 +1,18 @@
 import logging
 import os
-import ast 
-import json
+import ast
 
-from fastapi import HTTPException
-
-from gremlin_python import statics
-from gremlin_python.structure.graph import Graph
-from gremlin_python.process.graph_traversal import __
-from gremlin_python.process.strategies import *
-from gremlin_python.process.traversal import T, P, Operator
-from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
-from gremlin_python.structure.io import graphsonV2d0
+from data_catalog_api.models.nodes import Node
+from dotenv import load_dotenv
+from fastapi import status
+from fastapi.responses import JSONResponse
 from gremlin_python.driver import client, serializer
-from gremlin_python.driver.protocol import GremlinServerError
-from gremlin_python.driver.request import RequestMessage
+from data_catalog_api.exceptions.exceptions import MultipleNodesInDbError
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
-from dotenv import load_dotenv
+
 load_dotenv()
 connstring = os.environ.get("cosmosDBConnection")
 
@@ -36,10 +29,10 @@ connstring = os.environ.get("cosmosDBConnection")
     return g """
 
 cosmosdb_conn = client.Client(os.environ.get("cosmosDBServer"), 'g',
-                       username=os.environ.get("cosmosDBUsername"),
-                       password=os.environ.get("cosmosDBPassword"),
-                       message_serializer=serializer.GraphSONSerializersV2d0()
-                    )
+                              username=os.environ.get("cosmosDBUsername"),
+                              password=os.environ.get("cosmosDBPassword"),
+                              message_serializer=serializer.GraphSONSerializersV2d0())
+
 
 def submit(query, message=None, params=None):
     callback = cosmosdb_conn.submitAsync(query)
@@ -49,39 +42,40 @@ def submit(query, message=None, params=None):
             results.extend(result)
         return results
     else:
-        print(f"No results returned from query: {gremlinQuery}")
+        print(f"No results returned from query: {query}")
 
 
 async def get_count():   
     res = submit("g.V().count()")
-    return(res)
+    return res
 
 
 async def get_node_by_id(node_id: str):
     res = submit(f"g.V('{node_id}')")
-    return(res)
 
-async def get_node_by_label_id(label: str, node_id: str):
-    res = submit(f"g.V.hasLabel('{label}').has('id', '{node_id}')")
-    return(res)
+    if len(res) == 0:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
 
-async def upsert_node(label: str, id: str, content: str):
-    query = f"g.V().hasLabel('{label}').has('id','{id}').fold().coalesce(unfold(),addV('{label}').property('id','{id}').property('version','1')"
-    content_dict = ast.literal_eval(content)
+    if len(res) > 1:
+        raise MultipleNodesInDbError(node_id)
+    else:
+        return res[0]
+
+
+async def get_nodes_by_label(label: str, skip: int, limit: int):
+    if limit is None:
+        return submit(f"g.V().hasLabel('{label}')")
+
+    return submit(f"g.V().hasLabel('{label}').range({skip}, {skip+limit})")
+
+
+async def upsert_node(node: Node):
     params = ""
-    for key, value in content_dict.items():
+    for key, value in node.properties.items():
         params = f"{params}.property('{key}','{value}')"
-    
-    print(content)
-    print(query+params)
 
-    res = submit(query+params + ')')
-    return res
+    query = f"g.V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
+            f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})"
 
-    #return(query)
-
-async def add_property_to_node(node_id: str, property_key: str, property_val: str):
-    query = f"g.V('{node_id}').property('{property_key}','{property_val}')"
     res = submit(query)
-    return(res)
-
+    return res

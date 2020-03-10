@@ -9,6 +9,7 @@ python = "^3.7"
 gremlinpython = "^3.4.6"
 tornado = "4.4.1"
 fastapi = "^0.52.0"
+python-dotenv = "^0.12.0"
 
 [tool.poetry.dev-dependencies]
 uvicorn = "^0.11.3"

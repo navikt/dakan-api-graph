@@ -4,8 +4,7 @@ then
     for FILE in /var/run/secrets/nais.io/vault/*.env
     do
         _oldIFS=$IFS
-        IFS='
-'
+        IFS=''
         for line in $(cat "$FILE"); do
             _key=${line%%=*}
             _val=${line#*=}

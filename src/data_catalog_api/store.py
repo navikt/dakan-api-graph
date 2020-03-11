@@ -15,7 +15,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 
 load_dotenv()
-connstring = os.environ.get("cosmosDBConnection")
+connstring = os.environ["cosmosDBConnection"]
 
 # CosmosDB does not support bytecode yet
 # https://github.com/Azure/azure-cosmos-dotnet-v2/issues/439
@@ -29,10 +29,13 @@ connstring = os.environ.get("cosmosDBConnection")
         raise HTTPException(status_code=500, detail="Could not Login to CosmosDB")
     return g """
 
-cosmosdb_conn = client.Client(os.environ.get("cosmosDBServer"), 'g',
+try:
+    cosmosdb_conn = client.Client(os.environ.get("cosmosDBServer"), 'g',
                               username=os.environ.get("cosmosDBUsername"),
                               password=os.environ.get("cosmosDBPassword"),
                               message_serializer=serializer.GraphSONSerializersV2d0())
+except KeyError:
+    load_dotenv()
 
 
 def submit(query, message=None, params=None):

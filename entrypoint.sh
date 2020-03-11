@@ -22,5 +22,4 @@ then
 else
     echo "FOUND NO SECRETS"
 fi
-cd src/data_catalog_api
 exec "$@"

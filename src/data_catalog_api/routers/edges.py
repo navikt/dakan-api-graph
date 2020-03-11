@@ -6,7 +6,7 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.get("/edge/{id}", response_model=List[EdgeResponse])
+@router.get("/edge/{id}", response_model=List[EdgeResponse], tags=["Edge"])
 async def get_edge_by_id(id: str):
     """
     Get node by id:
@@ -17,7 +17,7 @@ async def get_edge_by_id(id: str):
     return response
 
 
-@router.put("/edge")
+@router.put("/edge", tags=["Edge"])
 async def put_node(edge: Edge):
     response = await store.create_edge(edge)
     return response

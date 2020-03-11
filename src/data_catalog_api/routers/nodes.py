@@ -6,7 +6,7 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.get("/node/{id}", response_model=NodeResponse)
+@router.get("/node/{id}", response_model=NodeResponse, tags=["Node"])
 async def get_node_by_id(id: str):
     """
     Get node by id:
@@ -17,7 +17,7 @@ async def get_node_by_id(id: str):
     return response
 
 
-@router.get("/nodes/{label}", response_model=List[Node])
+@router.get("/nodes/{label}", response_model=List[Node], tags=["Node"])
 async def get_nodes_by_label(label: str, skip: int=0, limit: int=None):
     """
     Get nodes by label:
@@ -28,17 +28,17 @@ async def get_nodes_by_label(label: str, skip: int=0, limit: int=None):
     return response
 
 
-@router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node])
+@router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 async def get_out_nodes(node_id: str, edge_label: str):
     return await store.get_out_nodes(node_id, edge_label)
 
 
-@router.get("/node/in/{node_id}/{edge_label}", response_model=List[Node])
+@router.get("/node/in/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 async def get_in_nodes(node_id: str, edge_label: str):
     return await store.get_in_nodes(node_id, edge_label)
 
 
-@router.put("/node")
+@router.put("/node", tags=["Node"])
 async def put_node(node: Node):
     response = await store.upsert_node(node)
     return response

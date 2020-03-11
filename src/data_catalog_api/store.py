@@ -17,6 +17,13 @@ logging.getLogger().setLevel(logging.INFO)
 load_dotenv()
 connstring = os.environ["cosmosDBConnection"]
 
+
+def setup_cosmosdb_con():
+    return client.Client(os.environ["cosmosDBServer"], 'g',
+                              username=os.environ["cosmosDBUsername"],
+                              password=os.environ["cosmosDBPassword"],
+                              message_serializer=serializer.GraphSONSerializersV2d0())
+
 # CosmosDB does not support bytecode yet
 # https://github.com/Azure/azure-cosmos-dotnet-v2/issues/439
 """ def setup_graph():
@@ -30,12 +37,10 @@ connstring = os.environ["cosmosDBConnection"]
     return g """
 
 try:
-    cosmosdb_conn = client.Client(os.environ.get("cosmosDBServer"), 'g',
-                              username=os.environ.get("cosmosDBUsername"),
-                              password=os.environ.get("cosmosDBPassword"),
-                              message_serializer=serializer.GraphSONSerializersV2d0())
+    cosmosdb_conn = setup_cosmosdb_con()
 except KeyError:
     load_dotenv()
+    cosmosdb_conn = setup_cosmosdb_con()
 
 
 def submit(query, message=None, params=None):

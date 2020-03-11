@@ -7,4 +7,4 @@ RUN pip3 install poetry && \
     poetry install
 
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
-CMD ["uvicorn", "main:app"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

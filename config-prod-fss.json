@@ -1,0 +1,6 @@
+{
+  "application_name": "data-catalog-api",
+  "proxy": "http://webproxy.nais:8088",
+  "ingress": "https://data-catalog-api.nais.adeo.no",
+  "team": "dataplattform"
+}

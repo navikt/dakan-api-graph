@@ -12,9 +12,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build -t ${ IMAGE }
-          docker login docker.pkg.github.com -u ${ GITHUB_REPOSITORY } -p ${ GITHUB_TOKEN }
-          docker push ${ IMAGE }
+          docker build -t ${IMAGE}
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+          docker push ${IMAGE}
 
   deploy-dev:
     name: deploy to nais dev-fss cluster

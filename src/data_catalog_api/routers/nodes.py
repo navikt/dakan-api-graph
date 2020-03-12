@@ -1,6 +1,7 @@
 from typing import List
 from data_catalog_api import store
 from data_catalog_api.models.nodes import Node, NodeResponse
+from data_catalog_api.models.requests import CommentPayload
 from fastapi import APIRouter
 
 router = APIRouter()
@@ -13,8 +14,7 @@ async def get_node_by_id(id: str):
 
     - **id**: id of node
     """
-    response = await store.get_node_by_id(id)
-    return response
+    return await store.get_node_by_id(id)
 
 
 @router.get("/nodes/{label}", response_model=List[Node], tags=["Node"])
@@ -24,8 +24,7 @@ async def get_nodes_by_label(label: str, skip: int=0, limit: int=None):
 
     - **label**: label of node
     """
-    response = await store.get_nodes_by_label(label, skip, limit)
-    return response
+    return await store.get_nodes_by_label(label, skip, limit)
 
 
 @router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
@@ -40,5 +39,9 @@ async def get_in_nodes(node_id: str, edge_label: str):
 
 @router.put("/node", tags=["Node"])
 async def put_node(node: Node):
-    response = await store.upsert_node(node)
-    return response
+    return await store.upsert_node(node)
+
+
+@router.put("/node/add/comment", tags=["Node"])
+async def put_node_comment(payload: CommentPayload):
+    return await store.upsert_comment(payload)

@@ -1,6 +1,5 @@
 import logging
 import os
-import ast
 
 from data_catalog_api.models.edges import Edge
 from data_catalog_api.models.nodes import Node
@@ -13,8 +12,6 @@ from data_catalog_api.exceptions.exceptions import MultipleNodesInDbError
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
-
-load_dotenv()
 connstring = os.environ["cosmosDBConnection"]
 
 

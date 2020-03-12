@@ -3,7 +3,7 @@ import os
 
 from data_catalog_api.models.edges import Edge
 from data_catalog_api.models.nodes import Node
-from data_catalog_api.models.requests import CommentPayload
+from data_catalog_api.models.requests import NodeRelationPayload
 from dotenv import load_dotenv
 from fastapi import status
 from fastapi.responses import JSONResponse
@@ -82,6 +82,19 @@ async def upsert_node(node: Node):
     return res
 
 
+async def upsert_node_and_create_edge(payload: NodeRelationPayload):
+    node = payload.node_body
+    params = ""
+    for key, value in node.properties.items():
+        params = f"{params}.property('{key}','{value}')"
+
+    query = f"g.V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
+            f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})" \
+            f".V('{payload.source_id}').addE('{payload.edge_label}').to(g.V('{node.id}'))"
+
+    return submit(query)
+
+
 async def delete_node(node_id: str):
     query_delete_node = f"g.V('{node_id}').drop()"
     return submit(query_delete_node)
@@ -108,17 +121,3 @@ async def create_edge(edge: Edge):
 async def delete_edge(source_id: str, target_id: str):
     query = f"g.V('{source_id}').outE().where(inV().hasId('{target_id}')).drop()"
     return submit(query)
-
-
-async def upsert_comment(payload: CommentPayload):
-    node = payload.comment_body
-    params = ""
-    for key, value in node.properties.items():
-        params = f"{params}.property('{key}','{value}')"
-
-    query = f"g.V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
-            f"addV('{node.label}').property('id','{node.id}').property('version','1'){params}); "
-    submit(query)
-    query_generate_edge = f"g.V('{payload.source_id}').addE('{payload.edge_label}').to(g.V('{node.id}'))"
-
-    return submit(query_generate_edge)

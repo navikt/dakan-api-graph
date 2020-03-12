@@ -12,11 +12,9 @@ from data_catalog_api.exceptions.exceptions import MultipleNodesInDbError
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
-connstring = os.environ["cosmosDBConnection"]
-
 
 def setup_cosmosdb_con():
-    return client.Client(os.environ["cosmosDBServer"], 'g',
+    return os.environ["cosmosDBConnection"], client.Client(os.environ["cosmosDBServer"], 'g',
                               username=os.environ["cosmosDBUsername"],
                               password=os.environ["cosmosDBPassword"],
                               message_serializer=serializer.GraphSONSerializersV2d0())
@@ -34,11 +32,11 @@ def setup_cosmosdb_con():
     return g """
 
 try:
-    cosmosdb_conn = setup_cosmosdb_con()
+    connstring, cosmosdb_conn = setup_cosmosdb_con()
 except KeyError:
     logging.warning("Getting env variables from .env file")
     load_dotenv()
-    cosmosdb_conn = setup_cosmosdb_con()
+    connstring, cosmosdb_conn = setup_cosmosdb_con()
 
 
 def submit(query, message=None, params=None):

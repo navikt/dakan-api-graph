@@ -1,5 +1,6 @@
 import logging
 import os
+from typing import List
 
 from data_catalog_api.models.edges import Edge
 from data_catalog_api.models.nodes import Node
@@ -70,12 +71,14 @@ async def get_nodes_by_label(label: str, skip: int, limit: int):
     return submit(f"g.V().hasLabel('{label}').range({skip}, {skip+limit})")
 
 
-async def upsert_node(node: Node):
+async def upsert_node(nodes: List[Node]):
     params = ""
-    for key, value in node.properties.items():
-        params = f"{params}.property('{key}','{value}')"
+    query = "g"
+    for node in nodes:
+        for key, value in node.properties.items():
+            params = f"{params}.property('{key}','{value}')"
 
-    query = f"g.V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
+        query += f".V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
             f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})"
 
     res = submit(query)

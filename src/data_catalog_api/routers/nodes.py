@@ -50,7 +50,7 @@ async def get_in_nodes(node_id: str, edge_label: str):
 
 
 @router.put("/node", tags=["Node"])
-async def put_node(node: Node):
+async def put_node(node: List[Node]):
     return await store.upsert_node(node)
 
 

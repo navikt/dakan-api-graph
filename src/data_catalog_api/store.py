@@ -112,3 +112,10 @@ async def upsert_comment(payload: CommentPayload):
     query_generate_edge = f"g.V('{payload.source_id}').addE('{payload.edge_label}').to(g.V('{node.id}'))"
 
     return submit(query_generate_edge)
+
+
+async def delete_node(source_id: str, target_id: str):
+    query_delete_edge = f"g.V('{source_id}').outE().where(outV().hasId('{target_id}')).drop()"
+    submit(query_delete_edge)
+    query_delete_node = f"g.V('{target_id}').drop()"
+    return submit(query_delete_node)

@@ -18,7 +18,7 @@ async def get_node_by_id(id: str):
 
 
 @router.get("/nodes/{label}", response_model=List[Node], tags=["Node"])
-async def get_nodes_by_label(label: str, skip: int=0, limit: int=None):
+async def get_nodes_by_label(label: str, skip: int = 0, limit: int = None):
     """
     Get nodes by label:
 
@@ -40,6 +40,11 @@ async def get_in_nodes(node_id: str, edge_label: str):
 @router.put("/node", tags=["Node"])
 async def put_node(node: Node):
     return await store.upsert_node(node)
+
+
+@router.delete("/node/delete", tags=["Node"])
+async def delete_node(n1: str, n2: str):
+    return await store.delete_node(n1, n2)
 
 
 @router.put("/node/add/comment", tags=["Node"])

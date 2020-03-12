@@ -36,6 +36,7 @@ def setup_cosmosdb_con():
 try:
     cosmosdb_conn = setup_cosmosdb_con()
 except KeyError:
+    logging.warning("Getting env variables from .env file")
     load_dotenv()
     cosmosdb_conn = setup_cosmosdb_con()
 

@@ -116,8 +116,12 @@ async def get_edge_by_id(id: str):
     return submit(query)
 
 
-async def create_edge(edge: Edge):
-    query = f"g.V('{edge.inV}').addE('{edge.label}').to(g.V('{edge.outV}'))"
+async def create_edge(edges: List[Edge]):
+    query = "g"
+
+    for edge in edges:
+        query += f".V('{edge.inV}').addE('{edge.label}').to(g.V('{edge.outV}'))"
+
     return submit(query)
 
 

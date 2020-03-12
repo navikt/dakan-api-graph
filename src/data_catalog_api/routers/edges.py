@@ -17,8 +17,8 @@ async def get_edge_by_id(id: str):
 
 
 @router.put("/edge", tags=["Edge"])
-async def put_node(edge: Edge):
-    return await store.create_edge(edge)
+async def put_node(edges: List[Edge]):
+    return await store.create_edge(edges)
 
 
 @router.delete("/edge/delete", tags=["Edge"])

@@ -82,6 +82,11 @@ async def upsert_node(node: Node):
     return res
 
 
+async def delete_node(node_id: str):
+    query_delete_node = f"g.V('{node_id}').drop()"
+    return submit(query_delete_node)
+
+
 async def get_out_nodes(node_id: str, edge_label: str):
     return submit(f"g.V('{node_id}').out('{edge_label}')")
 
@@ -100,6 +105,11 @@ async def create_edge(edge: Edge):
     return submit(query)
 
 
+async def delete_edge(source_id: str, target_id: str):
+    query = f"g.V('{source_id}').outE().where(inV().hasId('{target_id}')).drop()"
+    return submit(query)
+
+
 async def upsert_comment(payload: CommentPayload):
     node = payload.comment_body
     params = ""
@@ -112,10 +122,3 @@ async def upsert_comment(payload: CommentPayload):
     query_generate_edge = f"g.V('{payload.source_id}').addE('{payload.edge_label}').to(g.V('{node.id}'))"
 
     return submit(query_generate_edge)
-
-
-async def delete_node(source_id: str, target_id: str):
-    query_delete_edge = f"g.V('{source_id}').outE().where(outV().hasId('{target_id}')).drop()"
-    submit(query_delete_edge)
-    query_delete_node = f"g.V('{target_id}').drop()"
-    return submit(query_delete_node)

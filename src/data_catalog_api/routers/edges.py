@@ -13,11 +13,14 @@ async def get_edge_by_id(id: str):
 
     - **id**: id of node
     """
-    response = await store.get_edge_by_id(id)
-    return response
+    return await store.get_edge_by_id(id)
 
 
 @router.put("/edge", tags=["Edge"])
 async def put_node(edge: Edge):
-    response = await store.create_edge(edge)
-    return response
+    return await store.create_edge(edge)
+
+
+@router.delete("/edge/delete", tags=["Edge"])
+async def delete_edge(n1: str, n2: str):
+    return await store.delete_edge(n1, n2)

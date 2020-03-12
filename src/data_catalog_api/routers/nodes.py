@@ -43,8 +43,8 @@ async def put_node(node: Node):
 
 
 @router.delete("/node/delete", tags=["Node"])
-async def delete_node(n1: str, n2: str):
-    return await store.delete_node(n1, n2)
+async def delete_node(node_id: str):
+    return await store.delete_node(node_id)
 
 
 @router.put("/node/add/comment", tags=["Node"])

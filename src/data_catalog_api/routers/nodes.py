@@ -3,10 +3,12 @@ from data_catalog_api import store
 from data_catalog_api.models.nodes import Node, NodeResponse
 from data_catalog_api.models.requests import NodeRelationPayload
 from fastapi import APIRouter
+from data_catalog_api.log_metrics import metric_types
 
 router = APIRouter()
 
 
+@metric_types.REQUEST_TIME_GET_NODE_BY_ID.time()
 @router.get("/node/{id}", response_model=NodeResponse, tags=["Node"])
 async def get_node_by_id(id: str):
     """

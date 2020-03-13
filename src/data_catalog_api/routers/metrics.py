@@ -1,5 +1,6 @@
 import prometheus_client
-from fastapi import APIRouter
+from fastapi import APIRouter, status
+from fastapi.responses import Response
 
 router = APIRouter()
 
@@ -10,5 +11,4 @@ def metrics():
     Get metrics:
 
     """
-
-    return prometheus_client.generate_latest()
+    return Response(status_code=status.HTTP_200_OK, content=prometheus_client.generate_latest())

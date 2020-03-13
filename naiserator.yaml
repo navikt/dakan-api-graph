@@ -44,7 +44,7 @@ spec:
     enabled: true
   prometheus:
     enabled: true
-    path: /
+    path: /metrics
   istio:
     enabled: false
   resources:

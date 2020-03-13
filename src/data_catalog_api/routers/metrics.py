@@ -5,10 +5,10 @@ router = APIRouter()
 
 
 @router.get("/metrics", include_in_schema=False)
-async def get_node_by_id():
+def metrics():
     """
-    Get node by id:
+    Get metrics:
 
-    - **id**: id of node
     """
-    return await prometheus_client.generate_latest()
+
+    return prometheus_client.generate_latest()

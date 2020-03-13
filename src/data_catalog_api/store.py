@@ -158,9 +158,19 @@ async def get_in_nodes(node_id: str, edge_label: str):
     return res
 
 
-async def get_edge_by_id(id: str):
-    query = f"g.E('{id}')"
-    return submit(query)
+async def get_edge_by_id(edge_id: str):
+    res = submit("g.E('{id}')")
+
+    if len(res) == 0:
+        metric_types.GET_EDGE_BY_ID_NOT_FOUND.inc()
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+
+    if len(res) > 1:
+        metric_types.GET_EDGE_BY_ID_MULTIPLE_EDGES_ERROR.inc()
+        raise MultipleNodesInDbError(edge_id)
+    else:
+        metric_types.GET_EDGE_BY_ID_SUCCESS.inc()
+        return res[0]
 
 
 async def create_edge(edges: List[Edge]):
@@ -169,9 +179,22 @@ async def create_edge(edges: List[Edge]):
     for edge in edges:
         query += f".V('{edge.inV}').addE('{edge.label}').to(g.V('{edge.outV}'))"
 
-    return submit(query)
+    res = submit(query)
+    if res is None:
+        metric_types.UPSERT_EDGES_FAILED.inc()
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert edges"})
+
+    metric_types.UPSERT_EDGES_SUCCESS.inc()
+    return res
 
 
 async def delete_edge(source_id: str, target_id: str):
     query = f"g.V('{source_id}').outE().where(inV().hasId('{target_id}')).drop()"
-    return submit(query)
+
+    res = submit(query)
+    if res is None:
+        metric_types.DELETE_EDGES_FAILED.inc()
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete edge"})
+
+    metric_types.DELETE_EDGES_SUCCESS.inc()
+    return res

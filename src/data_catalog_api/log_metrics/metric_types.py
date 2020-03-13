@@ -63,7 +63,7 @@ REQUESTS_TIME_UPSERT_NODES = Summary('data_catalog_api_request_time_upsert_nodes
                                      'Time spent processing upsert request')
 
 # Delete Nodes
-DELETE_NODES_SUCCESS = Counter('data_catalog_api_counter_delete_node_success',
+DELETE_NODES_SUCCESS = Counter('data_catalog_api_counter_delete_nodes_success',
                                'Counter delete nodes endpoint success')
 
 DELETE_NODES_FAILED = Counter('data_catalog_api_counter_delete_nodes_failed',
@@ -71,3 +71,36 @@ DELETE_NODES_FAILED = Counter('data_catalog_api_counter_delete_nodes_failed',
 
 REQUESTS_TIME_DELETE_NODES = Summary('data_catalog_api_request_time_delete_nodes',
                                      'Time spent processing delete request')
+
+# Edge by id
+GET_EDGE_BY_ID_SUCCESS = Counter('data_catalog_api_counter_get_edge_by_id_success',
+                                 'Counter get edge by id endpoint success')
+
+GET_EDGE_BY_ID_MULTIPLE_EDGES_ERROR = Counter('data_catalog_api_counter_get_edge_by_id_multiple_nodes',
+                                              'Counter get edge by id endpoint multiple nodes error')
+
+GET_EDGE_BY_ID_NOT_FOUND = Counter('data_catalog_api_counter_get_edge_by_id_not_found',
+                                   'Counter get edge by id not found')
+
+REQUEST_TIME_GET_EDGE_BY_ID = Summary('data_catalog_api_request_time_get_edge_by_id',
+                                      'Time spent processing get edge request')
+
+# Upsert Edges
+UPSERT_EDGES_SUCCESS = Counter('data_catalog_api_counter_upsert_edges_success',
+                               'Counter upsert edges endpoint success')
+
+UPSERT_EDGES_FAILED = Counter('data_catalog_api_counter_upsert_edges_failed',
+                              'Counter upsert edges endpoint failed')
+
+REQUESTS_TIME_UPSERT_EDGES = Summary('data_catalog_api_request_time_upsert_edges',
+                                     'Time spent processing upsert edge request')
+
+# Delete Nodes
+DELETE_EDGES_SUCCESS = Counter('data_catalog_api_counter_delete_edges_success',
+                               'Counter delete edges endpoint success')
+
+DELETE_EDGES_FAILED = Counter('data_catalog_api_counter_delete_edges_failed',
+                              'Counter delete edges endpoint failed')
+
+REQUESTS_TIME_DELETE_EDGES = Summary('data_catalog_api_request_time_delete_edges',
+                                     'Time spent processing delete edge request')

@@ -70,9 +70,16 @@ async def get_node_by_id(node_id: str):
 
 async def get_nodes_by_label(label: str, skip: int, limit: int):
     if limit is None:
-        return submit(f"g.V().hasLabel('{label}')")
+        res = submit(f"g.V().hasLabel('{label}')")
+    else:
+        res = submit(f"g.V().hasLabel('{label}').range({skip}, {skip+limit})")
 
-    return submit(f"g.V().hasLabel('{label}').range({skip}, {skip+limit})")
+    if len(res) == 0:
+        metric_types.GET_NODE_BY_LABEL_NOT_FOUND.inc()
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+
+    metric_types.GET_NODE_BY_LABEL_SUCCESS.inc()
+    return res
 
 
 async def upsert_node(nodes: List[Node]):

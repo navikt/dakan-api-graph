@@ -19,6 +19,7 @@ async def get_node_by_id(id: str):
     return await store.get_node_by_id(id)
 
 
+@metric_types.REQUEST_TIME_GET_NODE_BY_LABEL.time()
 @router.get("/nodes/{label}", response_model=List[Node], tags=["Node"])
 async def get_nodes_by_label(label: str, skip: int = 0, limit: int = None):
     """

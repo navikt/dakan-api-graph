@@ -54,11 +54,13 @@ async def get_in_nodes(node_id: str, edge_label: str):
     return await store.get_in_nodes(node_id, edge_label)
 
 
+@metric_types.REQUESTS_TIME_UPSERT_NODES.time()
 @router.put("/node", tags=["Node"])
 async def put_node(nodes: List[Node]):
     return await store.upsert_node(nodes)
 
 
+@metric_types.REQUESTS_TIME_DELETE_NODES.time()
 @router.delete("/node/delete", tags=["Node"])
 async def delete_node(node_id: str):
     """

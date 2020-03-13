@@ -93,6 +93,12 @@ async def upsert_node(nodes: List[Node]):
             f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})"
 
     res = submit(query)
+
+    if res is None:
+        metric_types.UPSERT_NODES_FAILED.inc()
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert nodes"})
+
+    metric_types.UPSERT_NODES_SUCCESS.inc()
     return res
 
 
@@ -111,7 +117,15 @@ async def upsert_node_and_create_edge(payload: NodeRelationPayload):
 
 async def delete_node(node_id: str):
     query_delete_node = f"g.V('{node_id}').drop()"
-    return submit(query_delete_node)
+
+    res = submit(query_delete_node)
+
+    if res is None:
+        metric_types.DELETE_NODES_FAILED.inc()
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete node"})
+
+    metric_types.DELETE_NODES_SUCCESS.inc()
+    return res
 
 
 async def get_out_nodes(node_id: str, edge_label: str):

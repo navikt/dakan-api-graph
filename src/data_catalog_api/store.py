@@ -112,7 +112,14 @@ async def upsert_node_and_create_edge(payload: NodeRelationPayload):
             f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})" \
             f".V('{payload.source_id}').addE('{payload.edge_label}').to(g.V('{node.id}'))"
 
-    return submit(query)
+    res = submit(query)
+
+    if res is None:
+        metric_types.UPSERT_NODE_AND_CREATE_EDGE_FAILED.inc()
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'Failed to upsert and create edge'})
+
+    metric_types.UPSERT_NODE_AND_CREATE_EDGE_SUCCESS.inc()
+    return res
 
 
 async def delete_node(node_id: str):

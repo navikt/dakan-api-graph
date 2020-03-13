@@ -69,6 +69,7 @@ async def delete_node(node_id: str):
     return await store.delete_node(node_id)
 
 
+@metric_types.REQUESTS_TIME_UPSERT_NODE_AND_CREATE_EDGE.time()
 @router.put("/node/edge/upsert/", tags=["Node"])
 async def upsert_node_and_create_edge(payload: NodeRelationPayload):
     """

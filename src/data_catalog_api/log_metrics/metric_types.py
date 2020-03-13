@@ -42,6 +42,16 @@ GET_NODES_BY_INWARD_RELATION_NOT_FOUND = Counter('data_catalog_api_counter_get_n
 REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION = Summary('data_catalog_api_request_time_get_nodes_by_inward_relation',
                                                     'Time spent processing get request')
 
+#  Upsert Node And Create Edge
+UPSERT_NODE_AND_CREATE_EDGE_SUCCESS = Counter('data_catalog_api_counter_upsert_node_and_create_edge_success',
+                                              'Counter upsert node and edge endpoint success')
+
+UPSERT_NODE_AND_CREATE_EDGE_FAILED = Counter('data_catalog_api_counter_upsert_node_and_create_edge_failed',
+                                             'Counter upsert node and edge endpoint failed')
+
+REQUESTS_TIME_UPSERT_NODE_AND_CREATE_EDGE = Summary('data_catalog_api_request_time_upsert_node_and_create_edge',
+                                                    'Time spent processing upsert node and edge request')
+
 # Upsert Nodes
 UPSERT_NODES_SUCCESS = Counter('data_catalog_api_counter_upsert_nodes_success',
                                'Counter upsert nodes endpoint success')

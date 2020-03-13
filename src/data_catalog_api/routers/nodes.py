@@ -16,7 +16,6 @@ async def get_node_by_id(id: str):
 
     - **id**: id of node
     """
-    metric_types.GET_NODE_BY_ID.inc()
     return await store.get_node_by_id(id)
 
 

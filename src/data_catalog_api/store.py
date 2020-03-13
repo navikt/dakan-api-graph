@@ -2,6 +2,7 @@ import logging
 import os
 from typing import List
 
+from data_catalog_api.log_metrics import metric_types
 from data_catalog_api.models.edges import Edge
 from data_catalog_api.models.nodes import Node
 from data_catalog_api.models.requests import NodeRelationPayload
@@ -56,11 +57,14 @@ async def get_node_by_id(node_id: str):
     res = submit(f"g.V('{node_id}')")
 
     if len(res) == 0:
+        metric_types.GET_NODE_BY_ID_NOT_FOUND.inc()
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
 
     if len(res) > 1:
+        metric_types.GET_NODE_BY_ID_MULTIPLE_NODES_ERROR.inc()
         raise MultipleNodesInDbError(node_id)
     else:
+        metric_types.GET_NODE_BY_ID_SUCCESS.inc()
         return res[0]
 
 

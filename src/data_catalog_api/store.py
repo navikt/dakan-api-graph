@@ -115,11 +115,26 @@ async def delete_node(node_id: str):
 
 
 async def get_out_nodes(node_id: str, edge_label: str):
-    return submit(f"g.V('{node_id}').out('{edge_label}')")
+
+    res = submit(f"g.V('{node_id}').out('{edge_label}')")
+
+    if len(res) == 0:
+        metric_types.GET_NODES_BY_OUTWARD_RELATION_NOT_FOUND.inc()
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+
+    metric_types.GET_NODES_BY_OUTWARD_RELATION_SUCCESS.inc()
+    return res
 
 
 async def get_in_nodes(node_id: str, edge_label: str):
-    return submit(f"g.V('{node_id}').in('{edge_label}')")
+    res = submit(f"g.V('{node_id}').in('{edge_label}')")
+
+    if len(res) == 0:
+        metric_types.GET_NODES_BY_INWARD_RELATION_NOT_FOUND.inc()
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+
+    metric_types.GET_NODES_BY_INWARD_RELATION_SUCCESS.inc()
+    return res
 
 
 async def get_edge_by_id(id: str):

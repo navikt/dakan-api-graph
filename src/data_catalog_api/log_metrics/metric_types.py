@@ -125,7 +125,7 @@ UPSERT_EDGES_CONNECTION_REFUSED = Counter('data_catalog_api_counter_upsert_edges
 REQUESTS_TIME_UPSERT_EDGES = Summary('data_catalog_api_request_time_upsert_edges',
                                      'Time spent processing upsert edge request')
 
-# Delete Nodes
+# Delete Edges
 DELETE_EDGES_SUCCESS = Counter('data_catalog_api_counter_delete_edges_success',
                                'Counter delete edges endpoint success')
 

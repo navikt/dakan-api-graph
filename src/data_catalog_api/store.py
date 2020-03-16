@@ -230,7 +230,7 @@ async def delete_edge(source_id: str, target_id: str):
     try:
         res = submit(query)
     except ConnectionRefusedError:
-        metric_types.DELETE_NODES_CONNECTION_REFUSED.inc()
+        metric_types.DELETE_EDGES_CONNECTION_REFUSED.inc()
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if res is None:

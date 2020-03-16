@@ -73,10 +73,14 @@ async def get_node_by_id(node_id: str):
 
 
 async def get_nodes_by_label(label: str, skip: int, limit: int):
-    if limit is None:
-        res = submit(f"g.V().hasLabel('{label}')")
-    else:
-        res = submit(f"g.V().hasLabel('{label}').range({skip}, {skip+limit})")
+    try:
+        if limit is None:
+            res = submit(f"g.V().hasLabel('{label}')")
+        else:
+            res = submit(f"g.V().hasLabel('{label}').range({skip}, {skip+limit})")
+    except ConnectionRefusedError:
+        metric_types.GET_NODE_BY_LABEL_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if len(res) == 0:
         metric_types.GET_NODE_BY_LABEL_NOT_FOUND.inc()
@@ -95,8 +99,11 @@ async def upsert_node(nodes: List[Node]):
 
         query += f".V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
             f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})"
-
-    res = submit(query)
+    try:
+        res = submit(query)
+    except ConnectionRefusedError:
+        metric_types.UPSERT_NODES_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if res is None:
         metric_types.UPSERT_NODES_FAILED.inc()
@@ -115,8 +122,11 @@ async def upsert_node_and_create_edge(payload: NodeRelationPayload):
     query = f"g.V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
             f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})" \
             f".V('{payload.source_id}').addE('{payload.edge_label}').to(g.V('{node.id}'))"
-
-    res = submit(query)
+    try:
+        res = submit(query)
+    except ConnectionRefusedError:
+        metric_types.UPSERT_NODE_AND_CREATE_EDGE_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if res is None:
         metric_types.UPSERT_NODE_AND_CREATE_EDGE_FAILED.inc()
@@ -129,7 +139,11 @@ async def upsert_node_and_create_edge(payload: NodeRelationPayload):
 async def delete_node(node_id: str):
     query_delete_node = f"g.V('{node_id}').drop()"
 
-    res = submit(query_delete_node)
+    try:
+        res = submit(query_delete_node)
+    except ConnectionRefusedError:
+        metric_types.DELETE_NODES_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if res is None:
         metric_types.DELETE_NODES_FAILED.inc()
@@ -141,7 +155,11 @@ async def delete_node(node_id: str):
 
 async def get_out_nodes(node_id: str, edge_label: str):
 
-    res = submit(f"g.V('{node_id}').out('{edge_label}')")
+    try:
+        res = submit(f"g.V('{node_id}').out('{edge_label}')")
+    except ConnectionRefusedError:
+        metric_types.GET_NODES_BY_OUTWARD_RELATION_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if len(res) == 0:
         metric_types.GET_NODES_BY_OUTWARD_RELATION_NOT_FOUND.inc()
@@ -152,7 +170,12 @@ async def get_out_nodes(node_id: str, edge_label: str):
 
 
 async def get_in_nodes(node_id: str, edge_label: str):
-    res = submit(f"g.V('{node_id}').in('{edge_label}')")
+
+    try:
+        res = submit(f"g.V('{node_id}').in('{edge_label}')")
+    except ConnectionRefusedError:
+        metric_types.GET_NODES_BY_INWARD_RELATION_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if len(res) == 0:
         metric_types.GET_NODES_BY_INWARD_RELATION_NOT_FOUND.inc()
@@ -163,7 +186,12 @@ async def get_in_nodes(node_id: str, edge_label: str):
 
 
 async def get_edge_by_id(edge_id: str):
-    res = submit("g.E('{id}')")
+
+    try:
+        res = submit("g.E('{id}')")
+    except ConnectionRefusedError:
+        metric_types.GET_EDGE_BY_ID_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if len(res) == 0:
         metric_types.GET_EDGE_BY_ID_NOT_FOUND.inc()
@@ -183,7 +211,12 @@ async def create_edge(edges: List[Edge]):
     for edge in edges:
         query += f".V('{edge.inV}').addE('{edge.label}').to(g.V('{edge.outV}'))"
 
-    res = submit(query)
+    try:
+        res = submit(query)
+    except ConnectionRefusedError:
+        metric_types.UPSERT_EDGES_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
     if res is None:
         metric_types.UPSERT_EDGES_FAILED.inc()
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert edges"})
@@ -194,8 +227,12 @@ async def create_edge(edges: List[Edge]):
 
 async def delete_edge(source_id: str, target_id: str):
     query = f"g.V('{source_id}').outE().where(inV().hasId('{target_id}')).drop()"
+    try:
+        res = submit(query)
+    except ConnectionRefusedError:
+        metric_types.DELETE_NODES_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
-    res = submit(query)
     if res is None:
         metric_types.DELETE_EDGES_FAILED.inc()
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete edge"})

@@ -63,7 +63,7 @@ UPSERT_NODE_AND_CREATE_EDGE_SUCCESS = Counter('data_catalog_api_counter_upsert_n
 UPSERT_NODE_AND_CREATE_EDGE_FAILED = Counter('data_catalog_api_counter_upsert_node_and_create_edge_failed',
                                              'Counter upsert node and edge endpoint failed')
 
-GUPSERT_NODE_AND_CREATE_EDGE_CONNECTION_REFUSED = Counter(
+UPSERT_NODE_AND_CREATE_EDGE_CONNECTION_REFUSED = Counter(
     'data_catalog_api_counter_upsert_node_and_create_edge_refused',
     'Counter upsert node and create edge connection refused')
 

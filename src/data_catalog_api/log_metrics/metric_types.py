@@ -22,6 +22,9 @@ GET_NODE_BY_LABEL_SUCCESS = Counter('data_catalog_api_counter_get_node_by_label_
 GET_NODE_BY_LABEL_NOT_FOUND = Counter('data_catalog_api_counter_get_node_by_label_not_found',
                                       'Counter get node by label none found')
 
+GET_NODE_BY_LABEL_CONNECTION_REFUSED = Counter('data_catalog_api_counter_get_node_by_label_connection_refused',
+                                               'Counter get node by label connection refused')
+
 REQUEST_TIME_GET_NODE_BY_LABEL = Summary('data_catalog_api_request_time_get_node_by_label',
                                          'Time spent processing get request')
 
@@ -31,6 +34,10 @@ GET_NODES_BY_OUTWARD_RELATION_SUCCESS = Counter('data_catalog_api_counter_get_no
 
 GET_NODES_BY_OUTWARD_RELATION_NOT_FOUND = Counter('data_catalog_api_counter_get_nodes_by_outward_relation_not_found',
                                                   'Counter get nodes by outward relation none found')
+
+GET_NODES_BY_OUTWARD_RELATION_CONNECTION_REFUSED = Counter(
+    'data_catalog_api_counter_get_nodes_by_outward_relation_connection_refused',
+    'Counter get nodes by outward relation connection refused')
 
 REQUESTS_TIME_GET_NODE_BY_OUTWARD_RELATION = Summary('data_catalog_api_request_time_get_nodes_by_outward_relation',
                                                      'Time spent processing get request')
@@ -42,6 +49,10 @@ GET_NODES_BY_INWARD_RELATION_SUCCESS = Counter('data_catalog_api_counter_get_nod
 GET_NODES_BY_INWARD_RELATION_NOT_FOUND = Counter('data_catalog_api_counter_get_nodes_by_inward_relation_not_found',
                                                  'Counter get nodes by inward relation none found')
 
+GET_NODES_BY_INWARD_RELATION_CONNECTION_REFUSED = Counter(
+    'data_catalog_api_counter_get_nodes_by_inward_relation_connection_refused',
+    'Counter get nodes by inward relation connection refused')
+
 REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION = Summary('data_catalog_api_request_time_get_nodes_by_inward_relation',
                                                     'Time spent processing get request')
 
@@ -51,6 +62,10 @@ UPSERT_NODE_AND_CREATE_EDGE_SUCCESS = Counter('data_catalog_api_counter_upsert_n
 
 UPSERT_NODE_AND_CREATE_EDGE_FAILED = Counter('data_catalog_api_counter_upsert_node_and_create_edge_failed',
                                              'Counter upsert node and edge endpoint failed')
+
+GUPSERT_NODE_AND_CREATE_EDGE_CONNECTION_REFUSED = Counter(
+    'data_catalog_api_counter_upsert_node_and_create_edge_refused',
+    'Counter upsert node and create edge connection refused')
 
 REQUESTS_TIME_UPSERT_NODE_AND_CREATE_EDGE = Summary('data_catalog_api_request_time_upsert_node_and_create_edge',
                                                     'Time spent processing upsert node and edge request')
@@ -62,6 +77,9 @@ UPSERT_NODES_SUCCESS = Counter('data_catalog_api_counter_upsert_nodes_success',
 UPSERT_NODES_FAILED = Counter('data_catalog_api_counter_upsert_nodes_failed',
                               'Counter upsert nodes endpoint failed')
 
+UPSERT_NODES_CONNECTION_REFUSED = Counter('data_catalog_api_counter_upsert_nodes_connection_refused',
+                                          'Counter upsert nodes connection refused')
+
 REQUESTS_TIME_UPSERT_NODES = Summary('data_catalog_api_request_time_upsert_nodes',
                                      'Time spent processing upsert request')
 
@@ -71,6 +89,9 @@ DELETE_NODES_SUCCESS = Counter('data_catalog_api_counter_delete_nodes_success',
 
 DELETE_NODES_FAILED = Counter('data_catalog_api_counter_delete_nodes_failed',
                               'Counter delete nodes endpoint failed')
+
+DELETE_NODES_CONNECTION_REFUSED = Counter('data_catalog_api_counter_delete_nodes_connection_refused',
+                                          'Counter delete nodes connection refused')
 
 REQUESTS_TIME_DELETE_NODES = Summary('data_catalog_api_request_time_delete_nodes',
                                      'Time spent processing delete request')
@@ -85,6 +106,9 @@ GET_EDGE_BY_ID_MULTIPLE_EDGES_ERROR = Counter('data_catalog_api_counter_get_edge
 GET_EDGE_BY_ID_NOT_FOUND = Counter('data_catalog_api_counter_get_edge_by_id_not_found',
                                    'Counter get edge by id not found')
 
+GET_EDGE_BY_ID_CONNECTION_REFUSED = Counter('data_catalog_api_counter_get_edge_by_id_connection_refused',
+                                            'Counter get edge by id connection refused')
+
 REQUEST_TIME_GET_EDGE_BY_ID = Summary('data_catalog_api_request_time_get_edge_by_id',
                                       'Time spent processing get edge request')
 
@@ -95,6 +119,9 @@ UPSERT_EDGES_SUCCESS = Counter('data_catalog_api_counter_upsert_edges_success',
 UPSERT_EDGES_FAILED = Counter('data_catalog_api_counter_upsert_edges_failed',
                               'Counter upsert edges endpoint failed')
 
+UPSERT_EDGES_CONNECTION_REFUSED = Counter('data_catalog_api_counter_upsert_edges_connection_refused',
+                                          'Counter upsert edges connection refused')
+
 REQUESTS_TIME_UPSERT_EDGES = Summary('data_catalog_api_request_time_upsert_edges',
                                      'Time spent processing upsert edge request')
 
@@ -104,6 +131,9 @@ DELETE_EDGES_SUCCESS = Counter('data_catalog_api_counter_delete_edges_success',
 
 DELETE_EDGES_FAILED = Counter('data_catalog_api_counter_delete_edges_failed',
                               'Counter delete edges endpoint failed')
+
+DELETE_EDGES_CONNECTION_REFUSED = Counter('data_catalog_api_counter_delete_edges_connection_refused',
+                                          'Counter delete edges connection refused')
 
 REQUESTS_TIME_DELETE_EDGES = Summary('data_catalog_api_request_time_delete_edges',
                                      'Time spent processing delete edge request')

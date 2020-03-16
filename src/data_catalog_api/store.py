@@ -54,7 +54,11 @@ def submit(query, message=None, params=None):
 
 
 async def get_node_by_id(node_id: str):
-    res = submit(f"g.V('{node_id}')")
+    try:
+        res = submit(f"g.V('{node_id}')")
+    except ConnectionRefusedError:
+        metric_types.GET_NODE_BY_ID_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if len(res) == 0:
         metric_types.GET_NODE_BY_ID_NOT_FOUND.inc()

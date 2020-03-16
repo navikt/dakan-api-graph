@@ -10,6 +10,9 @@ GET_NODE_BY_ID_MULTIPLE_NODES_ERROR = Counter('data_catalog_api_counter_get_node
 GET_NODE_BY_ID_NOT_FOUND = Counter('data_catalog_api_counter_get_node_by_id_not_found',
                                    'Counter get node by id not found')
 
+GET_NODE_BY_ID_CONNECTION_REFUSED = Counter('data_catalog_api_counter_get_node_by_id_connection_refused',
+                                            'Counter get node by id connection refused')
+
 REQUEST_TIME_GET_NODE_BY_ID = Summary('data_catalog_api_request_time_get_node_by_id',
                                       'Time spent processing get request')
 # Nodes by label

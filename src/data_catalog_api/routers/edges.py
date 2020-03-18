@@ -8,8 +8,8 @@ from data_catalog_api.log_metrics import metric_types
 router = APIRouter()
 
 
-@metric_types.REQUEST_TIME_GET_EDGE_BY_ID.time()
 @router.get("/edge/{id}", response_model=List[EdgeResponse], tags=["Edge"])
+@metric_types.REQUEST_TIME_GET_EDGE_BY_ID.time()
 async def get_edge_by_id(id: str):
     """
     Get edge by id:
@@ -19,14 +19,14 @@ async def get_edge_by_id(id: str):
     return await store.get_edge_by_id(id)
 
 
-@metric_types.REQUESTS_TIME_UPSERT_EDGES.time()
 @router.put("/edge", tags=["Edge"])
+@metric_types.REQUESTS_TIME_UPSERT_EDGES.time()
 async def put_node(edges: List[Edge]):
     return await store.create_edge(edges)
 
 
-@metric_types.REQUESTS_TIME_DELETE_EDGES.time()
 @router.delete("/edge/delete", tags=["Edge"])
+@metric_types.REQUESTS_TIME_DELETE_EDGES.time()
 async def delete_edge(n1: str, n2: str):
     """
     Delete edge by n1 and n2

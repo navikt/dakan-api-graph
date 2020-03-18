@@ -19,8 +19,8 @@ async def get_node_by_id(id: str):
     return await store.get_node_by_id(id)
 
 
-@metric_types.REQUEST_TIME_GET_NODE_BY_LABEL.time()
 @router.get("/nodes/{label}", response_model=List[Node], tags=["Node"])
+@metric_types.REQUEST_TIME_GET_NODE_BY_LABEL.time()
 async def get_nodes_by_label(label: str, skip: int = 0, limit: int = None):
     """
     Get nodes by label:
@@ -30,8 +30,8 @@ async def get_nodes_by_label(label: str, skip: int = 0, limit: int = None):
     return await store.get_nodes_by_label(label, skip, limit)
 
 
-@metric_types.REQUESTS_TIME_GET_NODE_BY_OUTWARD_RELATION.time()
 @router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
+@metric_types.REQUESTS_TIME_GET_NODE_BY_OUTWARD_RELATION.time()
 async def get_out_nodes(node_id: str, edge_label: str):
     """
     Get all nodes with outgoing relations to node_id
@@ -42,8 +42,8 @@ async def get_out_nodes(node_id: str, edge_label: str):
     return await store.get_out_nodes(node_id, edge_label)
 
 
-@metric_types.REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION.time()
 @router.get("/node/in/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
+@metric_types.REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION.time()
 async def get_in_nodes(node_id: str, edge_label: str):
     """
     Get all nodes with incoming relations to node_id
@@ -54,14 +54,14 @@ async def get_in_nodes(node_id: str, edge_label: str):
     return await store.get_in_nodes(node_id, edge_label)
 
 
-@metric_types.REQUESTS_TIME_UPSERT_NODES.time()
 @router.put("/node", tags=["Node"])
+@metric_types.REQUESTS_TIME_UPSERT_NODES.time()
 async def put_node(nodes: List[Node]):
     return await store.upsert_node(nodes)
 
 
-@metric_types.REQUESTS_TIME_DELETE_NODES.time()
 @router.delete("/node/delete", tags=["Node"])
+@metric_types.REQUESTS_TIME_DELETE_NODES.time()
 async def delete_node(node_id: str):
     """
     - **node_id**: ID of node to delete
@@ -69,8 +69,8 @@ async def delete_node(node_id: str):
     return await store.delete_node(node_id)
 
 
-@metric_types.REQUESTS_TIME_UPSERT_NODE_AND_CREATE_EDGE.time()
 @router.put("/node/edge/upsert/", tags=["Node"])
+@metric_types.REQUESTS_TIME_UPSERT_NODE_AND_CREATE_EDGE.time()
 async def upsert_node_and_create_edge(payload: NodeRelationPayload):
     """
     Creates a node based and generates an edge based on the payload

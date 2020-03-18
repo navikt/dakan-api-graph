@@ -25,7 +25,7 @@ async def put_node(edges: List[Edge]):
     return await store.create_edge(edges)
 
 
-@router.delete("/edge/delete", tags=["Edge"])
+@router.delete("/edge", tags=["Edge"])
 @metric_types.REQUESTS_TIME_DELETE_EDGES.time()
 async def delete_edge(n1: str, n2: str):
     """

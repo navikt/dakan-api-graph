@@ -78,8 +78,9 @@ async def get_nodes_by_label(label: str, skip: int, limit: int):
             res = submit(f"g.V().hasLabel('{label}')")
         else:
             res = submit(f"g.V().hasLabel('{label}').range({skip}, {skip+limit})")
-    except ConnectionRefusedError:
+    except ConnectionRefusedError as e:
         metric_types.GET_NODE_BY_LABEL_CONNECTION_REFUSED.inc()
+        logging.error(f"{e}")
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if len(res) == 0:

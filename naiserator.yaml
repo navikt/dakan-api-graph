@@ -37,6 +37,10 @@ spec:
       value: {{proxy}}
     - name: http_proxy
       value: {{proxy}}
+    - name: NO_PROXY
+      value: {{no_proxy}}
+    - name: no_proxy
+      value: {{no_proxy}}
   ingresses:
     - {{ingress}}
   leaderElection: false

@@ -1,4 +1,4 @@
-name: Build and deploy to dev-fss
+name: Build and deploy to fss
 on: push
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/data-catalog-api:${{ github.sha }}
@@ -19,7 +19,6 @@ jobs:
   deploy-dev:
     name: deploy to nais dev-fss cluster
     needs: build
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

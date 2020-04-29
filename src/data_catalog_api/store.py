@@ -20,7 +20,7 @@ def setup_cosmosdb_con():
     return os.environ["cosmosDBConnection"], client.Client(os.environ["cosmosDBServer"], 'g',
                               username=os.environ["cosmosDBUsername"],
                               password=os.environ["cosmosDBPassword"],
-                              message_serializer=serializer.GraphSONSerializersV2d0())
+                              message_serializer=serializer.graphsonV3d0)
 
 # CosmosDB does not support bytecode yet
 # https://github.com/Azure/azure-cosmos-dotnet-v2/issues/439

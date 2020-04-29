@@ -2,10 +2,15 @@ from typing import List
 from data_catalog_api import store
 from data_catalog_api.models.nodes import Node, NodeResponse
 from data_catalog_api.models.requests import NodeRelationPayload
-from fastapi import APIRouter
+from data_catalog_api.utils import authentication
+from fastapi import APIRouter, Header
 from data_catalog_api.log_metrics import metric_types
+from starlette import status
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 router = APIRouter()
+
 
 @metric_types.REQUEST_TIME_GET_NODE_BY_ID.time()
 @router.get("/node/{id}", response_model=NodeResponse, tags=["Node"])
@@ -55,26 +60,38 @@ async def get_in_nodes(node_id: str, edge_label: str):
 
 @metric_types.REQUESTS_TIME_UPSERT_NODES.time()
 @router.put("/node", tags=["Node"])
-async def put_node(nodes: List[Node]):
-    return await store.upsert_node(nodes)
+async def put_node(nodes: List[Node], request: Request):
+    if authentication.is_authorized(request.headers):
+        return await store.upsert_node(nodes)
+    else:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})
 
 
 @metric_types.REQUESTS_TIME_DELETE_NODES.time()
 @router.delete("/node/delete", tags=["Node"])
-async def delete_node(node_id: str):
+async def delete_node(node_id: str, request: Request):
     """
     - **node_id**: ID of node to delete
     """
-    return await store.delete_node(node_id)
+    if authentication.is_authorized(request.headers):
+        return await store.delete_node(node_id)
+    else:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})
 
 
 @metric_types.REQUESTS_TIME_UPSERT_NODE_AND_CREATE_EDGE.time()
 @router.put("/node/edge/upsert/", tags=["Node"])
-async def upsert_node_and_create_edge(payload: NodeRelationPayload):
+async def upsert_node_and_create_edge(payload: NodeRelationPayload, request: Request):
     """
     Creates a node based and generates an edge based on the payload
 
     - **payload**: Payload containing a node_body  to generate a new node,
                    and a source_id and edge_label to generate the relationship for the new node
     """
-    return await store.upsert_node_and_create_edge(payload)
+    if authentication.is_authorized(request.headers):
+        return await store.upsert_node_and_create_edge(payload)
+    else:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})

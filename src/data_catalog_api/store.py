@@ -112,7 +112,7 @@ async def upsert_node(nodes: List[Node]):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert nodes"})
 
     metric_types.UPSERT_NODES_SUCCESS.inc()
-    return res
+    return len(res)
 
 
 async def upsert_node_and_create_edge(payload: NodeRelationPayload):

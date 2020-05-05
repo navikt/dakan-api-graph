@@ -99,7 +99,7 @@ async def upsert_node(nodes: List[Node]):
             params = f"{params}.property('{key}','{value}')"
 
         query += f".V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
-            f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})"
+            f"addV('{node.label}').property('id','{node.id}').property('name','test'){params})"
     try:
         print(f"Query: {query}")
         res = submit(query)

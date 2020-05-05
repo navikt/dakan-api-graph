@@ -101,6 +101,7 @@ async def upsert_node(nodes: List[Node]):
         query += f".V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
             f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})"
     try:
+        print(f"Query: {query}")
         res = submit(query)
     except ConnectionRefusedError:
         metric_types.UPSERT_NODES_CONNECTION_REFUSED.inc()

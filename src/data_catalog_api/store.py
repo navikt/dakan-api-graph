@@ -92,9 +92,9 @@ async def get_nodes_by_label(label: str, skip: int, limit: int):
 
 
 async def upsert_node(nodes: List[Node]):
-    params = ""
     query = "g"
     for node in nodes:
+        params = ""
         for key, value in node.properties.items():
             params = f"{params}.property('{key}','{value}')"
 

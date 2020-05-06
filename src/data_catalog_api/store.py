@@ -95,11 +95,18 @@ async def upsert_node(nodes: List[Node]):
     query = "g"
     for node in nodes:
         params = ""
+        params_no_partition_key = ""
         for key, value in node.properties.items():
             params = f"{params}.property('{key}','{value}')"
+            if key is not os.environ["partitionKey"]:
+                params_no_partition_key = f"{params_no_partition_key}.property('{key}','{value}')"
 
-        query += f".V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
-            f"addV('{node.label}').property('id','{node.id}'){params})"
+        params_no_partition_key = ""
+        query += f".V().has('label','{node.label}').has('id','{node.id}').hasNext() ? " \
+                 f".fold().coalesce(unfold(){params_no_partition_key}," \
+                 f"addV('{node.label}').property('id','{node.id}'){params_no_partition_key}) : " \
+                 f".fold().coalesce(unfold(){params}," \
+                 f"addV('{node.label}').property('id','{node.id}'){params}) "
     try:
         print(query)
         res = submit(query)

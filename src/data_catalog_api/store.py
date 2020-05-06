@@ -98,7 +98,7 @@ async def upsert_node(nodes: List[Node]):
         params_no_partition_key = ""
         for key, value in node.properties.items():
             params = f"{params}.property('{key}','{value}')"
-            if key is not os.environ["partitionKey"]:
+            if key != os.environ["partitionKey"]:
                 params_no_partition_key = f"{params_no_partition_key}.property('{key}','{value}')"
 
         query += f".V().has('label','{node.label}').has('id','{node.id}')" \

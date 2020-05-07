@@ -5,7 +5,7 @@ from typing import List
 
 from data_catalog_api.log_metrics import metric_types
 from data_catalog_api.models.edges import Edge
-from data_catalog_api.models.nodes import Node
+from data_catalog_api.models.nodes import Node, NodeResponse
 from data_catalog_api.models.requests import NodeRelationPayload
 from dotenv import load_dotenv
 from fastapi import status
@@ -55,6 +55,12 @@ def submit(query, message=None, params=None):
         print(f"No results returned from query: {query}")
 
 
+def transform_node_response(nodes: List[NodeResponse]):
+    for node in nodes:
+        for key, value in node.properties.items():
+            node.properties[key] = json.loads(value[0]["value"])
+
+
 async def get_node_by_id(node_id: str):
     try:
         res = submit(f"g.V('{node_id}')")
@@ -70,6 +76,7 @@ async def get_node_by_id(node_id: str):
         metric_types.GET_NODE_BY_ID_MULTIPLE_NODES_ERROR.inc()
         raise MultipleNodesInDbError(node_id)
     else:
+        transform_node_response(res)
         metric_types.GET_NODE_BY_ID_SUCCESS.inc()
         return res[0]
 
@@ -89,6 +96,7 @@ async def get_nodes_by_label(label: str, skip: int, limit: int):
         metric_types.GET_NODE_BY_LABEL_NOT_FOUND.inc()
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
 
+    transform_node_response(res)
     metric_types.GET_NODE_BY_LABEL_SUCCESS.inc()
     return res
 
@@ -190,6 +198,7 @@ async def get_out_nodes(node_id: str, edge_label: str):
         metric_types.GET_NODES_BY_OUTWARD_RELATION_NOT_FOUND.inc()
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
 
+    transform_node_response(res)
     metric_types.GET_NODES_BY_OUTWARD_RELATION_SUCCESS.inc()
     return res
 
@@ -206,6 +215,7 @@ async def get_in_nodes(node_id: str, edge_label: str):
         metric_types.GET_NODES_BY_INWARD_RELATION_NOT_FOUND.inc()
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
 
+    transform_node_response(res)
     metric_types.GET_NODES_BY_INWARD_RELATION_SUCCESS.inc()
     return res
 

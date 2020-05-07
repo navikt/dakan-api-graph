@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+from json import JSONDecodeError
 from typing import List
 
 from data_catalog_api.log_metrics import metric_types
@@ -58,7 +59,10 @@ def submit(query, message=None, params=None):
 def transform_node_response(nodes: List[NodeResponse]):
     for node in nodes:
         for key, value in node.properties.items():
-            node.properties[key] = json.dumps(value[0]["value"])
+            try:
+                node.properties[key] = json.loads(value[0]["value"])
+            except JSONDecodeError:
+                node.properties[key] = json.dumps(value[0]["value"])
 
 
 async def get_node_by_id(node_id: str):
@@ -76,6 +80,7 @@ async def get_node_by_id(node_id: str):
         metric_types.GET_NODE_BY_ID_MULTIPLE_NODES_ERROR.inc()
         raise MultipleNodesInDbError(node_id)
     else:
+        transform_node_response(res)
         metric_types.GET_NODE_BY_ID_SUCCESS.inc()
         return res[0]
 

@@ -81,6 +81,16 @@ async def delete_node(node_id: str, request: Request):
                             content={"Error": "This operation requires authorization"})
 
 
+@metric_types.REQUESTS_TIME_DELETE_NODES_BY_TYPE.time()
+@router.delete("/node/delete/{node_type}", tags=["Node"])
+async def delete_node(node_type: str, request: Request):
+    if authentication.is_authorized(request.headers):
+        return await store.delete_node_by_type(node_type)
+    else:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})
+
+
 @metric_types.REQUESTS_TIME_UPSERT_NODE_AND_CREATE_EDGE.time()
 @router.put("/node/edge/upsert/", tags=["Node"])
 async def upsert_node_and_create_edge(payload: NodeRelationPayload, request: Request):

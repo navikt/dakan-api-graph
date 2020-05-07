@@ -158,6 +158,23 @@ async def delete_node(node_id: str):
     return res
 
 
+def delete_node_by_type(node_type: str):
+    query_delete_node_by_type = f"g.V().hasLabel('{node_type}').drop()"
+
+    try:
+        res = submit(query_delete_node_by_type)
+    except ConnectionRefusedError:
+        metric_types.DELETE_NODES_BY_TYPE_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
+    if res is None:
+        metric_types.DELETE_NODES_BY_TYPE_FAILED.inc()
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete node"})
+
+    metric_types.DELETE_NODES_BY_TYPE_SUCCESS.inc()
+    return res
+
+
 async def get_out_nodes(node_id: str, edge_label: str):
 
     try:

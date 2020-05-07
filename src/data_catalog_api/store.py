@@ -115,7 +115,7 @@ async def upsert_node(nodes: List[Node]):
             return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert nodes"})
 
     metric_types.UPSERT_NODES_SUCCESS.inc()
-    return len(res)
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"Successfully upserted {len(nodes)} nodes"})
 
 
 async def upsert_node_and_create_edge(payload: NodeRelationPayload):
@@ -211,23 +211,21 @@ async def get_edge_by_id(edge_id: str):
 
 
 async def create_edge(edges: List[Edge]):
-    query = "g"
-
     for edge in edges:
-        query += f".V('{edge.inV}').addE('{edge.label}').to(g.V('{edge.outV}'))"
+        query = f"g.V('{edge.inV}').addE('{edge.label}').to(g.V('{edge.outV}'))"
 
-    try:
-        res = submit(query)
-    except ConnectionRefusedError:
-        metric_types.UPSERT_EDGES_CONNECTION_REFUSED.inc()
-        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+        try:
+            res = submit(query)
+        except ConnectionRefusedError:
+            metric_types.UPSERT_EDGES_CONNECTION_REFUSED.inc()
+            return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
-    if res is None:
-        metric_types.UPSERT_EDGES_FAILED.inc()
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert edges"})
+        if res is None:
+            metric_types.UPSERT_EDGES_FAILED.inc()
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": "Failed to upsert edges"})
 
     metric_types.UPSERT_EDGES_SUCCESS.inc()
-    return res
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"Successfully upserted {len(edges)} edges"})
 
 
 async def delete_edge(source_id: str, target_id: str):

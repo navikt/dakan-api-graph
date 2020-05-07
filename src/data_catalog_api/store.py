@@ -92,8 +92,8 @@ async def get_nodes_by_label(label: str, skip: int, limit: int):
 
 
 async def upsert_node(nodes: List[Node]):
-    query = "g"
     for node in nodes:
+        query = "g"
         params = ""
         params_no_partition_key = ""
         for key, value in node.properties.items():
@@ -104,15 +104,15 @@ async def upsert_node(nodes: List[Node]):
         query += f".V().has('label','{node.label}').has('id','{node.id}')" \
                  f".fold().coalesce(unfold(){params_no_partition_key}," \
                  f"addV('{node.label}').property('id','{node.id}'){params})"
-    try:
-        res = submit(query)
-    except ConnectionRefusedError:
-        metric_types.UPSERT_NODES_CONNECTION_REFUSED.inc()
-        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+        try:
+            res = submit(query)
+        except ConnectionRefusedError:
+            metric_types.UPSERT_NODES_CONNECTION_REFUSED.inc()
+            return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
-    if res is None:
-        metric_types.UPSERT_NODES_FAILED.inc()
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert nodes"})
+        if res is None:
+            metric_types.UPSERT_NODES_FAILED.inc()
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert nodes"})
 
     metric_types.UPSERT_NODES_SUCCESS.inc()
     return len(res)

@@ -45,6 +45,7 @@ spec:
       value: "name"
   ingresses:
     - {{ingress}}
+    - {{ingress_nais_io}}
   leaderElection: false
   vault:
     enabled: true

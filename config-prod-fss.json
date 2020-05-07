@@ -3,6 +3,7 @@
   "proxy": "http://webproxy.nais:8088",
   "no_proxy": "localhost,127.0.0.1,10.254.0.1,.local,.adeo.no,.nav.no,.aetat.no,.devillo.no,.oera.no,.nais.io",
   "ingress": "https://data-catalog-api.nais.adeo.no",
+  "ingress_nais_io": "https://data-catalog-api.prod-fss.nais.io",
   "team": "dataplattform",
   "cert_path": "/etc/pki/tls/certs/ca-bundle.crt"
 }

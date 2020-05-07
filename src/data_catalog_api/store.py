@@ -1,5 +1,6 @@
 import logging
 import os
+import json
 from typing import List
 
 from data_catalog_api.log_metrics import metric_types
@@ -21,6 +22,7 @@ def setup_cosmosdb_con():
                                                            username=os.environ["cosmosDBUsername"],
                                                            password=os.environ["cosmosDBPassword"],
                                                            message_serializer=serializer.GraphSONSerializersV2d0())
+
 
 # CosmosDB does not support bytecode yet
 # https://github.com/Azure/azure-cosmos-dotnet-v2/issues/439
@@ -97,9 +99,10 @@ async def upsert_node(nodes: List[Node]):
         params = ""
         params_no_partition_key = ""
         for key, value in node.properties.items():
-            params = f"{params}.property('{key}','{value}')"
+            clean_value = json.dumps(value).replace("'", "*")
+            params = f"{params}.property('{key}','{clean_value}')"
             if key != os.environ["partitionKey"]:
-                params_no_partition_key = f"{params_no_partition_key}.property('{key}','{value}')"
+                params_no_partition_key = f"{params_no_partition_key}.property('{key}','{clean_value}')"
 
         query += f".V().has('label','{node.label}').has('id','{node.id}')" \
                  f".fold().coalesce(unfold(){params_no_partition_key}," \

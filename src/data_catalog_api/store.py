@@ -58,6 +58,7 @@ def submit(query, message=None, params=None):
 
 def transform_node_response(nodes: List[NodeResponse]):
     for node in nodes:
+        print(node.properties)
         for key, value in node.properties.items():
             try:
                 node.properties[key] = json.loads(value[0]["value"])

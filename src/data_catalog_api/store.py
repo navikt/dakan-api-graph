@@ -59,11 +59,11 @@ def submit(query, message=None, params=None):
 def transform_node_response(nodes: List[NodeResponse]):
     for node in nodes:
         print(node)
-        for key, value in node.properties.items():
+        for key, value in node["properties"].items():
             try:
-                node.properties[key] = json.loads(value[0]["value"])
+                node["properties"][key] = json.loads(value[0]["value"])
             except JSONDecodeError:
-                node.properties[key] = json.dumps(value[0]["value"])
+                node["properties"][key] = json.dumps(value[0]["value"])
 
 
 async def get_node_by_id(node_id: str):

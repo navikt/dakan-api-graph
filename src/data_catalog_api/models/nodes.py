@@ -1,3 +1,5 @@
+from typing import Dict
+
 from pydantic import BaseModel
 
 
@@ -7,7 +9,7 @@ class Node(BaseModel):
     properties: dict
 
 
-class NodeResponse(BaseModel):
+class NodeResponse(Dict):
     id: str
     label: str
     type: str

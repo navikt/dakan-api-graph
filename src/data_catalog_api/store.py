@@ -52,11 +52,11 @@ def submit_query(query, db_conn):
 def submit(query, message=None, params=None):
     global cosmosdb_conn
     try:
-        submit_query(query, cosmosdb_conn)
+        return submit_query(query, cosmosdb_conn)
     except tornado.iostream.StreamClosedError:
         cosmosdb_conn.close()
         cosmosdb_conn = get_db_connection()
-        submit_query(query, cosmosdb_conn)
+        return submit_query(query, cosmosdb_conn)
 
 
 def transform_node_response(nodes: List[NodeResponse]):

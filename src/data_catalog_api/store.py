@@ -38,20 +38,25 @@ def setup_cosmosdb_con():
 cosmosdb_conn = get_db_connection()
 
 
+def submit_query(query):
+    callback = cosmosdb_conn.submitAsync(query)
+    results = []
+    if callback.result() is not None:
+        for result in callback.result():
+            results.extend(result)
+        return results
+    else:
+        print(f"No results returned from query: {query}")
+
+
 def submit(query, message=None, params=None):
     global cosmosdb_conn
     try:
-        callback = cosmosdb_conn.submitAsync(query)
-        results = []
-        if callback.result() is not None:
-            for result in callback.result():
-                results.extend(result)
-            return results
-        else:
-            print(f"No results returned from query: {query}")
+        submit_query(query)
     except tornado.iostream.StreamClosedError:
         cosmosdb_conn.close()
         cosmosdb_conn = get_db_connection()
+        submit_query(query)
 
 
 def transform_node_response(nodes: List[NodeResponse]):

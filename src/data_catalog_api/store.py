@@ -177,7 +177,7 @@ async def delete_node(node_id: str):
 
 
 def delete_node_by_type(node_type: str):
-    query_delete_node_by_type = f"g.V().has('label', '{node_type}').drop().iterate()"
+    query_delete_node_by_type = f"g.V().has('label', '{node_type}').drop()"
 
     try:
         res = submit(query_delete_node_by_type)
@@ -281,4 +281,20 @@ async def delete_edge(source_id: str, target_id: str):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete edge"})
 
     metric_types.DELETE_EDGES_SUCCESS.inc()
+    return res
+
+
+async def delete_edge_by_label(edge_label: str):
+    query = f"g.E().has('label','{edge_label}').drop()"
+    try:
+        res = submit(query)
+    except ConnectionRefusedError:
+        metric_types.DELETE_EDGES_BY_LABEL_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
+    if res is None:
+        metric_types.DELETE_EDGES_BY_LABEL_FAILED.inc()
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete edge"})
+
+    metric_types.DELETE_EDGES_BY_LABEL_SUCCESS.inc()
     return res

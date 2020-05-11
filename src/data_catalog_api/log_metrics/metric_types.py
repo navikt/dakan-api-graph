@@ -150,3 +150,16 @@ DELETE_EDGES_CONNECTION_REFUSED = Counter('data_catalog_api_counter_delete_edges
 
 REQUESTS_TIME_DELETE_EDGES = Summary('data_catalog_api_request_time_delete_edges',
                                      'Time spent processing delete edge request')
+
+# Delete Edges by label
+DELETE_EDGES_BY_LABEL_SUCCESS = Counter('data_catalog_api_counter_delete_edges_by_label_success',
+                               'Counter delete edges by label endpoint success')
+
+DELETE_EDGES_BY_LABEL_FAILED = Counter('data_catalog_api_counter_delete_edges_by_label_failed',
+                              'Counter delete edges by label endpoint failed')
+
+DELETE_EDGES_BY_LABEL_CONNECTION_REFUSED = Counter('data_catalog_api_counter_delete_edges_by_label_connection_refused',
+                                          'Counter delete edges by label connection refused')
+
+REQUESTS_TIME_DELETE_EDGES_BY_LABEL = Summary('data_catalog_api_request_time_delete_edges_by_label',
+                                     'Time spent processing delete edge by label request')

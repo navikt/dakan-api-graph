@@ -83,7 +83,7 @@ async def delete_node(node_id: str, request: Request):
 
 @metric_types.REQUESTS_TIME_DELETE_NODES_BY_TYPE.time()
 @router.delete("/node/delete/{node_type}", tags=["Node"])
-async def delete_node(node_type: str, request: Request):
+async def delete_node_type(node_type: str, request: Request):
     if authentication.is_authorized(request.headers):
         return await store.delete_node_by_type(node_type)
     else:

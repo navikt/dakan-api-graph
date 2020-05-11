@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+import tornado.iostream
 from json import JSONDecodeError
 from typing import List
 
@@ -18,42 +19,39 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 
-def setup_cosmosdb_con():
-    return os.environ["cosmosDBConnection"], client.Client(os.environ["cosmosDBServer"], 'g',
-                                                           username=os.environ["cosmosDBUsername"],
-                                                           password=os.environ["cosmosDBPassword"],
-                                                           message_serializer=serializer.GraphSONSerializersV2d0())
-
-
-# CosmosDB does not support bytecode yet
-# https://github.com/Azure/azure-cosmos-dotnet-v2/issues/439
-""" def setup_graph():
+def get_db_connection():
     try:
-        graph = Graph()
-        g = graph.traversal().withRemote(DriverRemoteConnection(connstring, 'gmodern'))
-        logging.info('Successfully logged in to CosmosDB')
-    except Exception as e: 
-        logging.error(e, exc_info=True)
-        raise HTTPException(status_code=500, detail="Could not Login to CosmosDB")
-    return g """
+        return setup_cosmosdb_con()
+    except KeyError:
+        logging.warning("Getting env variables from .env file")
+        load_dotenv()
+        return setup_cosmosdb_con()
 
-try:
-    connstring, cosmosdb_conn = setup_cosmosdb_con()
-except KeyError:
-    logging.warning("Getting env variables from .env file")
-    load_dotenv()
-    connstring, cosmosdb_conn = setup_cosmosdb_con()
+
+def setup_cosmosdb_con():
+    return client.Client(os.environ["cosmosDBServer"], 'g',
+                         username=os.environ["cosmosDBUsername"],
+                         password=os.environ["cosmosDBPassword"],
+                         message_serializer=serializer.GraphSONSerializersV2d0())
+
+
+cosmosdb_conn = get_db_connection()
 
 
 def submit(query, message=None, params=None):
-    callback = cosmosdb_conn.submitAsync(query)
-    results = []
-    if callback.result() is not None:
-        for result in callback.result():
-            results.extend(result)
-        return results
-    else:
-        print(f"No results returned from query: {query}")
+    global cosmosdb_conn
+    try:
+        callback = cosmosdb_conn.submitAsync(query)
+        results = []
+        if callback.result() is not None:
+            for result in callback.result():
+                results.extend(result)
+            return results
+        else:
+            print(f"No results returned from query: {query}")
+    except tornado.iostream.StreamClosedError:
+        cosmosdb_conn.close()
+        cosmosdb_conn = get_db_connection()
 
 
 def transform_node_response(nodes: List[NodeResponse]):

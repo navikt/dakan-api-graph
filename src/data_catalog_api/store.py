@@ -285,7 +285,7 @@ async def delete_edge(source_id: str, target_id: str):
 
 
 async def delete_edge_by_label(edge_label: str):
-    query = f"g.E().hasLabel('{edge_label}').limit(2000).drop()"
+    query = f"g.E().hasLabel('{edge_label}').limit(10000).drop()"
     try:
         res = submit(query)
     except ConnectionRefusedError:

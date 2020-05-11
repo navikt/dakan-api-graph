@@ -26,7 +26,7 @@ async def get_edge_by_id(id: str):
 @router.put("/edge", tags=["Edge"])
 async def put_edge(edges: List[Edge], request: Request):
     if authentication.is_authorized(request.headers):
-        return await store.create_edge(edges)
+        return await store.upsert_edge(edges)
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})

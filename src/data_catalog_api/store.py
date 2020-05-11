@@ -242,9 +242,10 @@ async def get_edge_by_id(edge_id: str):
         return res[0]
 
 
-async def create_edge(edges: List[Edge]):
+async def upsert_edge(edges: List[Edge]):
     for edge in edges:
-        query = f"g.V('{edge.outV}').addE('{edge.label}').to(g.V('{edge.inV}'))"
+        query = f"g.V('{edge.outV}').coalesce(outE('{edge.label}').filter(inV().hasId('{edge.inV}'))," \
+                f" addE('{edge.label}').to(g.V('{edge.inV}')))"
 
         try:
             res = submit(query)

@@ -13,31 +13,31 @@ router = APIRouter()
 
 @metric_types.REQUEST_TIME_GET_EDGE_BY_ID.time()
 @router.get("/edge/{id}", response_model=List[EdgeResponse], tags=["Edge"])
-async def get_edge_by_id(id: str):
+def get_edge_by_id(id: str):
     """
     Get edge by id:
 
     - **id**: id of edge
     """
-    return await store.get_edge_by_id(id)
+    return store.get_edge_by_id(id)
 
 
 @metric_types.REQUEST_TIME_GET_EDGE_BY_LABEL.time()
 @router.get("/edge/label/{edge_label}", response_model=List[EdgeResponse], tags=["Edge"])
-async def get_edge_by_label(edge_label: str):
+def get_edge_by_label(edge_label: str):
     """
     Get edge by label:
 
     - **label**: label of edge
     """
-    return await store.get_edge_by_label(edge_label)
+    return store.get_edge_by_label(edge_label)
 
 
 @metric_types.REQUESTS_TIME_UPSERT_EDGES.time()
 @router.put("/edge", tags=["Edge"])
-async def put_edge(edges: List[Edge], request: Request):
+def put_edge(edges: List[Edge], request: Request):
     if authentication.is_authorized(request.headers):
-        return await store.upsert_edge(edges)
+        return store.upsert_edge(edges)
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})
@@ -45,7 +45,7 @@ async def put_edge(edges: List[Edge], request: Request):
 
 @metric_types.REQUESTS_TIME_DELETE_EDGES.time()
 @router.delete("/edge", tags=["Edge"])
-async def delete_edge(n1: str, n2: str, request: Request):
+def delete_edge(n1: str, n2: str, request: Request):
     """
     Delete edge by n1 and n2
 
@@ -53,7 +53,7 @@ async def delete_edge(n1: str, n2: str, request: Request):
     - **n2**: ID of target node
     """
     if authentication.is_authorized(request.headers):
-        return await store.delete_edge(n1, n2)
+        return store.delete_edge(n1, n2)
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})
@@ -61,14 +61,14 @@ async def delete_edge(n1: str, n2: str, request: Request):
 
 @metric_types.REQUESTS_TIME_DELETE_EDGES_BY_LABEL.time()
 @router.delete("/edge/{label}", tags=["Edge"])
-async def delete_edge(label: str, request: Request):
+def delete_edge(label: str, request: Request):
     """
     Delete edge by label
 
     - **label**: Edge label
     """
     if authentication.is_authorized(request.headers):
-        return await store.delete_edge_by_label(label)
+        return store.delete_edge_by_label(label)
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})

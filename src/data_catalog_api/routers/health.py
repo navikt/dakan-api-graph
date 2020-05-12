@@ -5,7 +5,7 @@ router = APIRouter()
 
 
 @router.get("/isAlive", include_in_schema=False)
-async def is_alive_status():
+def is_alive_status():
     """
     Alive check
     """
@@ -13,7 +13,7 @@ async def is_alive_status():
 
 
 @router.get("/isReady", include_in_schema=False)
-async def is_ready_status():
+def is_ready_status():
     """
     Ready check
     """

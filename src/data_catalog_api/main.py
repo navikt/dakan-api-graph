@@ -1,4 +1,3 @@
-import logging
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from data_catalog_api.routers import nodes, edges, health
@@ -6,7 +5,6 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from starlette.middleware.cors import CORSMiddleware
 from starlette_exporter import PrometheusMiddleware, handle_metrics
 
-logging.basicConfig(level=logging.WARNING)
 
 app = FastAPI(docs_url=None, redoc_url=None, swagger_static={"favicon": "/static/favicon.png"})
 

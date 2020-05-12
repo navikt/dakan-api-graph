@@ -177,7 +177,7 @@ async def delete_node(node_id: str):
 
 
 def delete_node_by_type(node_type: str):
-    query_delete_node_by_type = f"g.V().has('label', '{node_type}').drop()"
+    query_delete_node_by_type = f"g.V().hasLabel('{node_type}').limit(10000).drop()"
 
     try:
         res = submit(query_delete_node_by_type)

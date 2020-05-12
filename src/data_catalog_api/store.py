@@ -65,7 +65,8 @@ def transform_node_response(nodes: List[NodeResponse]):
             try:
                 node["properties"][key] = json.loads(value[0]["value"])
             except JSONDecodeError:
-                node["properties"][key] = json.dumps(value[0]["value"])
+                dumped_text = json.dumps(value[0]["value"])
+                node["properties"][key] = json.loads(dumped_text)
 
 
 async def get_node_by_id(node_id: str):

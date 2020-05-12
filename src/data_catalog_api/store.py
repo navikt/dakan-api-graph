@@ -247,6 +247,24 @@ async def get_edge_by_id(edge_id: str):
         return res[0]
 
 
+async def get_edge_by_label(edge_label: str):
+    query = f"g.E().hasLabel('{edge_label}')"
+
+    try:
+        res = submit(query)
+    except ConnectionRefusedError:
+        metric_types.GET_EDGE_BY_LABEL_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
+    if len(res) == 0:
+        metric_types.GET_EDGE_BY_LABEL_NOT_FOUND.inc()
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+
+    else:
+        metric_types.GET_EDGE_BY_LABEL_SUCCESS.inc()
+        return res
+
+
 async def upsert_edge(edges: List[Edge]):
     for edge in edges:
         query = f"g.V('{edge.outV}').as('out').V('{edge.inV}')" \

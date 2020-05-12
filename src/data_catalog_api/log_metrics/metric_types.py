@@ -125,6 +125,19 @@ GET_EDGE_BY_ID_CONNECTION_REFUSED = Counter('data_catalog_api_counter_get_edge_b
 REQUEST_TIME_GET_EDGE_BY_ID = Summary('data_catalog_api_request_time_get_edge_by_id',
                                       'Time spent processing get edge request')
 
+# Get Edge by label
+GET_EDGE_BY_LABEL_SUCCESS = Counter('data_catalog_api_counter_get_edge_by_label_success',
+                                 'Counter get edge by label endpoint success')
+
+GET_EDGE_BY_LABEL_NOT_FOUND = Counter('data_catalog_api_counter_get_edge_by_label_not_found',
+                                   'Counter get edge by label not found')
+
+GET_EDGE_BY_LABEL_CONNECTION_REFUSED = Counter('data_catalog_api_counter_get_edge_by_label_connection_refused',
+                                            'Counter get edge by label connection refused')
+
+REQUEST_TIME_GET_EDGE_BY_LABEL = Summary('data_catalog_api_request_time_get_edge_by_label',
+                                      'Time spent processing get edge by label request')
+
 # Upsert Edges
 UPSERT_EDGES_SUCCESS = Counter('data_catalog_api_counter_upsert_edges_success',
                                'Counter upsert edges endpoint success')

@@ -63,10 +63,16 @@ def transform_node_response(nodes: List[NodeResponse]):
     for node in nodes:
         for key, value in node["properties"].items():
             try:
-                node["properties"][key] = json.loads(value[0]["value"])
+                new_value = json.loads(value[0]["value"])
             except JSONDecodeError:
                 dumped_text = json.dumps(value[0]["value"])
-                node["properties"][key] = json.loads(dumped_text)
+                new_value = json.loads(dumped_text)
+
+            if type(new_value) == str or isinstance(new_value, str):
+                new_value = new_value.replace('"', '')
+                new_value = new_value.replace("*", "'")
+
+            node["properties"][key] = new_value
 
 
 async def get_node_by_id(node_id: str):
@@ -94,7 +100,7 @@ async def get_nodes_by_label(label: str, skip: int, limit: int):
         if limit is None:
             res = submit(f"g.V().hasLabel('{label}')")
         else:
-            res = submit(f"g.V().hasLabel('{label}').range({skip}, {skip+limit})")
+            res = submit(f"g.V().hasLabel('{label}').range({skip}, {skip + limit})")
     except ConnectionRefusedError as e:
         metric_types.GET_NODE_BY_LABEL_CONNECTION_REFUSED.inc()
         logging.error(f"{e}")
@@ -127,7 +133,8 @@ async def upsert_node(nodes: List[Node]):
             res = submit(query)
         except ConnectionRefusedError:
             metric_types.UPSERT_NODES_CONNECTION_REFUSED.inc()
-            return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+            return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                                content={"Error": "Connection refused"})
 
         if res is None:
             metric_types.UPSERT_NODES_FAILED.inc()
@@ -195,7 +202,6 @@ def delete_node_by_type(node_type: str):
 
 
 async def get_out_nodes(node_id: str, edge_label: str):
-
     try:
         res = submit(f"g.V('{node_id}').out('{edge_label}')")
     except ConnectionRefusedError:
@@ -212,7 +218,6 @@ async def get_out_nodes(node_id: str, edge_label: str):
 
 
 async def get_in_nodes(node_id: str, edge_label: str):
-
     try:
         res = submit(f"g.V('{node_id}').in('{edge_label}')")
     except ConnectionRefusedError:
@@ -229,7 +234,6 @@ async def get_in_nodes(node_id: str, edge_label: str):
 
 
 async def get_edge_by_id(edge_id: str):
-
     try:
         res = submit("g.E('{id}')")
     except ConnectionRefusedError:
@@ -275,7 +279,8 @@ async def upsert_edge(edges: List[Edge]):
             res = submit(query)
         except ConnectionRefusedError:
             metric_types.UPSERT_EDGES_CONNECTION_REFUSED.inc()
-            return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+            return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                                content={"Error": "Connection refused"})
 
         if res is None:
             metric_types.UPSERT_EDGES_FAILED.inc()

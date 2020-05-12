@@ -22,6 +22,17 @@ async def get_edge_by_id(id: str):
     return await store.get_edge_by_id(id)
 
 
+@metric_types.REQUEST_TIME_GET_EDGE_BY_LABEL.time()
+@router.get("/edge/label/{edge_label}", response_model=List[EdgeResponse], tags=["Edge"])
+async def get_edge_by_label(edge_label: str):
+    """
+    Get edge by label:
+
+    - **label**: label of edge
+    """
+    return await store.get_edge_by_label(edge_label)
+
+
 @metric_types.REQUESTS_TIME_UPSERT_EDGES.time()
 @router.put("/edge", tags=["Edge"])
 async def put_edge(edges: List[Edge], request: Request):

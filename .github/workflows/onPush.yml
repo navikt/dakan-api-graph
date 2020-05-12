@@ -1,5 +1,9 @@
 name: Build and deploy to fss
-on: push
+on:
+  push:
+    branches:
+      - master
+
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/data-catalog-api:${{ github.sha }}
 jobs:

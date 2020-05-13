@@ -68,7 +68,7 @@ def get_nodes_by_label(label: str, skip: int, limit: int):
         metric_types.GET_NODE_BY_LABEL_NOT_FOUND.inc()
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
 
-#    transform_node_response(res)
+    transform_node_response(res)
     metric_types.GET_NODE_BY_LABEL_SUCCESS.inc()
     return res
 

@@ -53,7 +53,7 @@ def get_node_by_id(node_id: str):
         return res[0]
 
 
-async def get_nodes_by_label(label: str, skip: int, limit: int):
+def get_nodes_by_label(label: str, skip: int, limit: int):
     try:
         if limit is None:
             res = cosmosdb_conn.submit(f"g.V().hasLabel('{label}')")

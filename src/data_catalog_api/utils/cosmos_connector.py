@@ -1,5 +1,6 @@
 import os
 import tornado.iostream
+import tornado.httpclient
 from data_catalog_api.utils.logger import Logger
 
 from dotenv import load_dotenv
@@ -15,7 +16,7 @@ class CosmosConnector(Logger):
     def submit(self, query):
         try:
             return self._submit_query(query)
-        except (tornado.iostream.StreamClosedError, protocol.GremlinServerError):
+        except (tornado.iostream.StreamClosedError, protocol.GremlinServerError, tornado.httpclient.HTTPError):
             self._logger.warning("Stream closed, reconnecting to database")
             self._connection.close()
             self._connection = self._get_db_connection()

@@ -8,7 +8,6 @@ from data_catalog_api.log_metrics import metric_types
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-from fastapi.responses import RedirectResponse
 from data_catalog_api.utils.logger import Logger
 
 logger = Logger()
@@ -64,15 +63,11 @@ def get_in_nodes(node_id: str, edge_label: str):
 @metric_types.REQUESTS_TIME_UPSERT_NODES.time()
 @router.put("/node", tags=["Node"])
 async def put_node(nodes: List[Node], request: Request):
-    logger.log.info(request.headers.get("Origin"))
-    if request.headers.get("type") == "indexer":
-        if authentication.is_authorized(request.headers):
-            return store.upsert_node(nodes)
-        else:
-            return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
-                                content={"Error": "This operation requires authorization"})
+    if authentication.is_authorized(request.headers):
+        return store.upsert_node(nodes)
     else:
-        return RedirectResponse(url="http://localhost:8000/login", status_code=status.HTTP_303_SEE_OTHER)
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})
 
 
 @metric_types.REQUESTS_TIME_DELETE_NODES.time()

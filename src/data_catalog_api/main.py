@@ -14,7 +14,7 @@ app.mount("/static", StaticFiles(directory="src/data_catalog_api/static"), name=
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000", "http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -40,4 +40,3 @@ app.include_router(nodes.router)
 app.include_router(edges.router)
 app.include_router(health.router)
 app.include_router(azure_ad.router)
-

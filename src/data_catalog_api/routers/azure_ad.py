@@ -1,9 +1,12 @@
+import json
+import os
+
+from starlette import status
 from starlette.requests import Request
 from fastapi import APIRouter
 from authlib.integrations.starlette_client import OAuth
-from fastapi.responses import RedirectResponse
+from starlette.responses import JSONResponse
 from data_catalog_api.utils.logger import Logger
-import os
 
 logger = Logger()
 
@@ -23,7 +26,6 @@ oauth.register(
 
 @router.get("/login")
 async def login_via_azure(request: Request):
-    logger.log.info(request.headers.get("Origin"))
     redirect_uri = f'{os.environ["INGRESS"]}/auth'
     return await oauth.azure.authorize_redirect(request, redirect_uri)
 
@@ -32,4 +34,6 @@ async def login_via_azure(request: Request):
 async def auth_via_azure(request: Request):
     token = await oauth.azure.authorize_access_token(request)
     user = await oauth.azure.parse_id_token(request, token)
-    return dict(user)
+    logger.log.info(f"User {user['name']} logged in")
+    return JSONResponse(status_code=status.HTTP_200_OK,
+                        content={"client_info": json.dumps(user)})

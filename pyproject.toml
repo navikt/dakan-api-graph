@@ -8,11 +8,14 @@ authors = ["pbencze <paul.bencze@nav.no>"]
 python = "^3.6"
 gremlinpython = "^3.4.6"
 tornado = "4.4.1"
-fastapi = "^0.54.1"
+fastapi = "^0.55.1"
 python-dotenv = "^0.13.0"
 aiofiles = "^0.5.0"
-prometheus_client = "^0.7.1"
+prometheus_client = "^0.8.0"
 starlette-exporter = "^0.3.0"
+Authlib = "^0.14.3"
+httpx = "^0.13.3"
+itsdangerous = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 uvicorn = "^0.11.3"

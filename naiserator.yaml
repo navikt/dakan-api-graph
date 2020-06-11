@@ -43,6 +43,8 @@ spec:
       value: {{no_proxy}}
     - name: partitionKey
       value: "type"
+    - name: INGRESS
+      value: {{ingress}}
   ingresses:
     - {{ingress}}
     - {{ingress_nais_io}}

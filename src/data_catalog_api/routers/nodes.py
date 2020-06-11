@@ -8,7 +8,9 @@ from data_catalog_api.log_metrics import metric_types
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from data_catalog_api.utils.logger import Logger
 
+logger = Logger()
 router = APIRouter()
 
 
@@ -60,7 +62,7 @@ def get_in_nodes(node_id: str, edge_label: str):
 
 @metric_types.REQUESTS_TIME_UPSERT_NODES.time()
 @router.put("/node", tags=["Node"])
-def put_node(nodes: List[Node], request: Request):
+async def put_node(nodes: List[Node], request: Request):
     if authentication.is_authorized(request.headers):
         return store.upsert_node(nodes)
     else:
@@ -69,10 +71,11 @@ def put_node(nodes: List[Node], request: Request):
 
 
 @metric_types.REQUESTS_TIME_DELETE_NODES.time()
-@router.delete("/node/delete", tags=["Node"])
+@router.delete("/node/{type}/delete", tags=["Node"])
 def delete_node(node_id: str, request: Request):
     """
     - **node_id**: ID of node to delete
+    - **type**: type of node to delete
     """
     if authentication.is_authorized(request.headers):
         return store.delete_node(node_id)

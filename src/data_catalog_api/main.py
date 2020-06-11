@@ -7,10 +7,10 @@ from starlette_exporter import PrometheusMiddleware, handle_metrics
 from starlette.middleware.sessions import SessionMiddleware
 
 
-app = FastAPI(docs_url=None, redoc_url=None, swagger_static={"favicon": "/static/favicon.png"})
-
+app = FastAPI()
+subapi = FastAPI(docs_url="/docs", swagger_static={"favicon": "/static/favicon.png"}, openapi_prefix="/digdir-api")
 app.mount("/static", StaticFiles(directory="src/data_catalog_api/static"), name="static")
-
+app.mount("/cosmosdb", subapi)
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,9 +34,9 @@ def custom_swagger_ui_html():
     )
 
 
-app.add_middleware(PrometheusMiddleware)
-app.add_route("/metrics", handle_metrics)
-app.include_router(nodes.router)
-app.include_router(edges.router)
-app.include_router(health.router)
-app.include_router(azure_ad.router)
+subapi.add_middleware(PrometheusMiddleware)
+subapi.add_route("/metrics", handle_metrics)
+subapi.include_router(nodes.router)
+subapi.include_router(edges.router)
+subapi.include_router(health.router)
+subapi.include_router(azure_ad.router)

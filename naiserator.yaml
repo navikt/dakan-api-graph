@@ -13,13 +13,13 @@ spec:
     max: 4
     cpuThresholdPercentage: 70
   liveness:
-    path: /isAlive
+    path: /cosmosdb/isAlive
     timeout: 1
     initialDelay: 5
     periodSeconds: 5
     failureThreshold: 30
   readiness:
-    path: /isReady
+    path: /cosmosdb/isReady
     timeout: 1
     initialDelay: 5
     periodSeconds: 5
@@ -53,7 +53,7 @@ spec:
     enabled: true
   prometheus:
     enabled: true
-    path: /metrics
+    path: /cosmosdb/metrics
   istio:
     enabled: false
   resources:

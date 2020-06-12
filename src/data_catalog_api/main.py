@@ -8,7 +8,8 @@ from starlette.middleware.sessions import SessionMiddleware
 
 
 app = FastAPI()
-subapi = FastAPI(docs_url="/docs", redoc_url=None, swagger_static={"favicon": "/static/favicon.png"}, openapi_prefix="/digdir-api")
+subapi = FastAPI(docs_url=None, redoc_url=None, swagger_static={"favicon": "/static/favicon.png"},
+                 openapi_prefix="/cosmosdb")
 app.mount("/static", StaticFiles(directory="src/data_catalog_api/static"), name="static")
 app.mount("/cosmosdb", subapi)
 
@@ -24,11 +25,11 @@ app.add_middleware(
 app.add_middleware(SessionMiddleware, secret_key="random-key-here-123456")
 
 
-@app.get("/docs", include_in_schema=False)
+@subapi.get("/docs", include_in_schema=False)
 def custom_swagger_ui_html():
     return get_swagger_ui_html(
-        openapi_url=app.openapi_url,
-        title=app.title + " - Swagger UI",
+        openapi_url=subapi.openapi_url,
+        title=subapi.title + " - Swagger UI",
         swagger_js_url="/static/swagger-ui-bundle.js",
         swagger_css_url="/static/swagger-ui.css",
     )

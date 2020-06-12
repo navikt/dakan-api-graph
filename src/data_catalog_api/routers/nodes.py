@@ -63,7 +63,7 @@ def get_in_nodes(node_id: str, edge_label: str):
 @metric_types.REQUESTS_TIME_UPSERT_NODES.time()
 @router.put("/node", tags=["Node"])
 async def put_node(nodes: List[Node], request: Request):
-    if authentication.is_authorized(request):
+    if authentication.is_authorized(request.headers):
         return store.upsert_node(nodes)
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,

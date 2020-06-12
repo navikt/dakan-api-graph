@@ -37,6 +37,7 @@ async def login_via_azure(request: Request, redirect_url: str):
 @router.get("/auth")
 async def auth_via_azure(request: Request):
     response = RedirectResponse(request.cookies.get("Redirect-url"))
+    response.delete_cookie(key="Redirect-url")
     token = await oauth.azure.authorize_access_token(request)
     user = await oauth.azure.parse_id_token(request, token)
     request.session['User-Client'] = user

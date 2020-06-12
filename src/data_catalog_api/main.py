@@ -8,7 +8,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 
 app = FastAPI()
-subapi = FastAPI(docs_url='/docs', redoc_url=None, swagger_static={"favicon": "/static/favicon.png"},
+subapi = FastAPI(docs_url='/docs', swagger_static={"favicon": "/static/favicon.png"},
                  openapi_prefix="/cosmosdb")
 app.mount("/static", StaticFiles(directory="src/data_catalog_api/static"), name="static")
 app.mount("/cosmosdb", subapi)

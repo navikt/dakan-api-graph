@@ -3,16 +3,15 @@ import requests
 from data_catalog_api.utils.logger import Logger
 from typing import Mapping
 from data_catalog_api.exceptions.exceptions import EnvironmentVariableNotSet
-from starlette.requests import Request
 
 logger = Logger()
 
 
-def is_authorized(request: Request):
-    if request.headers.get("Authorization"):
-        return _verify_token(request.headers["Authorization"].split(' ')[-1])
+def is_authorized(headers: Mapping):
+    if headers.get("Authorization"):
+        return _verify_token(headers["Authorization"].split(' ')[-1])
     else:
-        return _verify_user(request)
+        return _verify_user(headers.get("JWT-Token"))
 
 
 def _verify_token(token: str):
@@ -24,29 +23,35 @@ def _verify_token(token: str):
         return token == expected_token
 
 
-def _verify_user(request: Request):
-    logger.log.info(request.session)
-    # try:
-    #     valid_groups = os.environ["VALID_AAD_GROUPS"]
-    # except KeyError as env:
-    #     raise EnvironmentVariableNotSet(env)
-    # else:
-    #     return False
-        #return _is_user_authorized(client_info, valid_groups)
+def _verify_user(jwt_token: str):
+    try:
+        user_groups = _get_user_info(jwt_token)
+    except (requests.exceptions.HTTPError, requests.exceptions.RequestException) as err:
+        logger.log.error(err)
+        return False
+
+    try:
+        valid_groups = os.environ["VALID_AAD_GROUPS"]
+    except KeyError as env:
+        raise EnvironmentVariableNotSet(env)
+    else:
+        return _is_user_authorized(user_groups, valid_groups)
 
 
-def _is_user_authorized(client_info: Mapping, valid_groups: str):
-    for group_id in client_info["groups"]:
-        if group_id in valid_groups.split(","):
+def _is_user_authorized(user_groups: Mapping, valid_groups: str):
+    for group_id in user_groups:
+        if group_id["id"] in valid_groups.split(","):
             return True
     return False
 
 
 def _get_user_info(token):
+    """
+    example of query string:
+        query = 'onPremisesSamAccountName,displayName,givenName,mail,officeLocation,surname,userPrincipalName,id,jobTitle'
+    """
     headers = {'Authorization': f'Bearer {token}'}
-    #query = 'onPremisesSamAccountName,displayName,givenName,mail,officeLocation,surname,userPrincipalName,id,jobTitle' \
-    #        ',memberOf'
     query = 'id'
-    #r = requests.get(f'https://graph.microsoft.com/v1.0/me?$select={query}', headers=headers)
     r = requests.get(f'https://graph.microsoft.com/v1.0/me/memberOf?$select={query}', headers=headers)
-    return r.json()
+    r.raise_for_status()
+    return r.json()["value"]

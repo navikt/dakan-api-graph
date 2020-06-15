@@ -47,3 +47,17 @@ async def auth_via_azure(request: Request):
     response.delete_cookie(key="ClientToken")
     response.set_cookie(key="ClientToken", value=token.get("access_token"))
     return response
+
+
+@router.get("/logout")
+async def logout_via_azure(request: Request, redirect_url: str):
+    post_logout_url = f"?post_logout_redirect_uri={redirect_url}"
+    logout_url = oauth.azure.server_metadata.get('end_session_endpoint', None)
+    request.session.pop('user', None)
+    if logout_url:
+        response = RedirectResponse(url=logout_url + post_logout_url)
+        response.delete_cookie(key="ClientToken")
+        response.delete_cookie(key="ClientName")
+        return response
+    return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        content={"Error": "Unable to logout, something went wrong"})

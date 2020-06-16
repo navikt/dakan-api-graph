@@ -1,0 +1,50 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: {{application_name}}
+  namespace: default
+  labels:
+    team: {{team}}
+spec:
+  image: {{image}}
+  port: 8000
+  replicas:
+    min: 2
+    max: 4
+    cpuThresholdPercentage: 70
+  liveness:
+    path: /cosmosdb/isAlive
+    timeout: 1
+    initialDelay: 5
+    periodSeconds: 5
+    failureThreshold: 30
+  readiness:
+    path: /cosmosdb/isReady
+    timeout: 1
+    initialDelay: 5
+    periodSeconds: 5
+    failureThreshold: 30
+  env:
+    - name: INGRESS
+      value: {{ingress}}
+  ingresses:
+    - {{ingress}}
+    - {{ingress_nais_io}}
+  leaderElection: false
+  vault:
+    enabled: true
+  azure:
+    application:
+      enabled: true
+  prometheus:
+    enabled: true
+    path: /cosmosdb/metrics
+  istio:
+    enabled: false
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi

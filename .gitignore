@@ -1,0 +1,6 @@
+**/.env
+poetry.lock
+.idea
+*.egg-info
+.vscode
+__pycache__

@@ -1,4 +1,4 @@
-import uuid
+import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from data_catalog_api.routers import nodes, edges, health, azure_ad
@@ -23,7 +23,7 @@ app.add_middleware(
 )
 
 # we need this to save temporary code & state in session
-app.add_middleware(SessionMiddleware, secret_key=print(uuid.uuid4()))
+app.add_middleware(SessionMiddleware, secret_key=os.environ["session_secret_key"])
 
 
 @subapi.get("/docs", include_in_schema=False)

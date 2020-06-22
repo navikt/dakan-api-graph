@@ -71,7 +71,7 @@ async def put_node(nodes: List[Node], request: Request):
 
 
 @metric_types.REQUESTS_TIME_DELETE_NODES.time()
-@router.delete("/node/{type}/delete", tags=["Node"])
+@router.delete("/node/delete/{node_id}", tags=["Node"])
 def delete_node(node_id: str, request: Request):
     """
     - **node_id**: ID of node to delete

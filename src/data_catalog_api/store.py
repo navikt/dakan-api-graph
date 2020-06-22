@@ -105,12 +105,19 @@ def upsert_node(nodes: List[Node]):
 def upsert_node_and_create_edge(payload: NodeRelationPayload):
     node = payload.node_body
     params = ""
+    params_no_partition_key = ""
     for key, value in node.properties.items():
-        params = f"{params}.property('{key}','{value}')"
+        clean_value = json.dumps(value).replace("'", "*")
+        params = f"{params}.property('{key}','{clean_value}')"
+        if key != os.environ["partitionKey"]:
+            params_no_partition_key = f"{params_no_partition_key}.property('{key}','{clean_value}')"
 
-    query = f"g.V().has('label','{node.label}').has('id','{node.id}').fold().coalesce(unfold(){params}," \
-            f"addV('{node.label}').property('id','{node.id}').property('version','1'){params})" \
-            f".V('{payload.source_id}').addE('{payload.edge_label}').to(g.V('{node.id}'))"
+    query = f"g.V().has('label','{node.label}').has('id','{node.id}').fold()" \
+            f".coalesce(unfold(){params_no_partition_key}," \
+            f"addV('{node.label}').property('id','{node.id}'){params})" \
+            f"g.V('{payload.source_id}').as('out').V('{node.id}')" \
+            f".coalesce(__.inE('{payload.edge_label}').where(outV().as('out')), " \
+            f"addE('{payload.edge_label}').from('out'))"
     try:
         res = cosmosdb_conn.submit(query)
     except ConnectionRefusedError:

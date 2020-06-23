@@ -107,14 +107,15 @@ def upsert_node_and_create_edge(payload: NodeRelationPayload):
     params = ""
     params_no_partition_key = ""
     for key, value in node.properties.items():
-        params = f"{params}.property('{key}','{value}')"
+        clean_value = json.dumps(value).replace("'", "*")
+        params = f"{params}.property('{key}','{clean_value}')"
         if key != os.environ["partitionKey"]:
-            params_no_partition_key = f"{params_no_partition_key}.property('{key}','{value}')"
+            params_no_partition_key = f"{params_no_partition_key}.property('{key}','{clean_value}')"
 
     query = f"g.V().has('label','{node.label}').has('id','{node.id}').fold()" \
             f".coalesce(unfold(){params_no_partition_key}," \
             f"addV('{node.label}').property('id','{node.id}'){params})" \
-            f"g.V('{payload.source_id}').as('out').V('{node.id}')" \
+            f".V('{payload.source_id}').as('out').V('{node.id}')" \
             f".coalesce(__.inE('{payload.edge_label}').where(outV().as('out')), " \
             f"addE('{payload.edge_label}').from('out'))"
 

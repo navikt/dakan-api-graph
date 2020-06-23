@@ -95,7 +95,7 @@ def delete_node_type(node_type: str, request: Request):
 
 
 @metric_types.REQUESTS_TIME_UPSERT_NODE_AND_CREATE_EDGE.time()
-@router.put("/node/edge/upsert/", tags=["Node"])
+@router.put("/node/edge/upsert", tags=["Node"])
 def upsert_node_and_create_edge(payload: NodeRelationPayload, request: Request):
     """
     Creates a node based and generates an edge based on the payload

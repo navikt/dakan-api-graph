@@ -71,11 +71,10 @@ async def put_node(nodes: List[Node], request: Request):
 
 
 @metric_types.REQUESTS_TIME_DELETE_NODES.time()
-@router.delete("/node/delete/{node_id}", tags=["Node"])
+@router.delete("/node/delete/id/{node_id}", tags=["Node"])
 def delete_node(node_id: str, request: Request):
     """
     - **node_id**: ID of node to delete
-    - **type**: type of node to delete
     """
     if authentication.is_authorized(request.headers):
         return store.delete_node(node_id)
@@ -85,8 +84,11 @@ def delete_node(node_id: str, request: Request):
 
 
 @metric_types.REQUESTS_TIME_DELETE_NODES_BY_TYPE.time()
-@router.delete("/node/delete/{node_type}", tags=["Node"])
+@router.delete("/node/delete/type/{node_type}", tags=["Node"])
 def delete_node_type(node_type: str, request: Request):
+    """
+    - **node_type**: type of node to delete
+    """
     if authentication.is_authorized(request.headers):
         return store.delete_node_by_type(node_type)
     else:

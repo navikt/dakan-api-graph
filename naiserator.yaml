@@ -33,9 +33,6 @@ spec:
   leaderElection: false
   vault:
     enabled: true
-  azure:
-    application:
-      enabled: true
   prometheus:
     enabled: true
     path: /cosmosdb/metrics

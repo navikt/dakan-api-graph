@@ -27,7 +27,6 @@ oauth.register(
 
 @router.get("/login")
 async def login_via_azure(request: Request, redirect_url: str):
-    logger.log.info("test1")
     redirect_uri = f'{os.environ["INGRESS"]}/auth'
     response = await oauth.azure.authorize_redirect(request, redirect_uri)
     response.set_cookie(key="Redirect-url", value=redirect_url)
@@ -40,8 +39,6 @@ async def auth_via_azure(request: Request):
     response.delete_cookie(key="Redirect-url")
     token = await oauth.azure.authorize_access_token(request)
     user = await oauth.azure.parse_id_token(request, token)
-    logger.log.info(user)
-    logger.log.info(f"User {user['name']} logged in")
     response.delete_cookie(key="ClientName")
     response.set_cookie(key="ClientName", value=user.get("email"))
     response.delete_cookie(key="ClientToken")

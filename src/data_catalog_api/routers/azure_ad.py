@@ -1,6 +1,6 @@
 import json
 import os
-
+import requests
 from starlette import status
 from starlette.requests import Request
 from fastapi import APIRouter
@@ -38,11 +38,25 @@ async def auth_via_azure(request: Request):
     response = RedirectResponse(request.cookies.get("Redirect-url"))
     response.delete_cookie(key="Redirect-url")
     token = await oauth.azure.authorize_access_token(request)
-    user = await oauth.azure.parse_id_token(request, token)
-    response.delete_cookie(key="ClientName")
-    response.set_cookie(key="ClientName", value=user.get("email"))
+
+    headers = {'Authorization': f'Bearer {token.get("access_token")}'}
+    query = 'onPremisesSamAccountName,givenName,mail,surname'
+    r = requests.get(f'https://graph.microsoft.com/v1.0/me?$select={query}', headers=headers)
+    user = r.json()
+
+    client_user = {
+        "userId": user["onPremisesSamAccountName"],
+        "givenName": user["givenName"],
+        "surname": user["surname"],
+        "initial": f"{user['givenName'][0]}{user['surname'][0]}",
+        "email": user["mail"]
+    }
+
+    # user = await oauth.azure.parse_id_token(request, token)
+    response.delete_cookie(key="ClientUser")
+    response.set_cookie(key="ClientUser", value=json.dumps(client_user), max_age=3600, expires=3600)
     response.delete_cookie(key="ClientToken")
-    response.set_cookie(key="ClientToken", value=token.get("access_token"))
+    response.set_cookie(key="ClientToken", value=token.get("access_token"), max_age=3600, expires=3600)
     return response
 
 

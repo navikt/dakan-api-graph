@@ -1,13 +1,12 @@
-name: Build and deploy to dev-fss
+name: Build and deploy to prod-fss
+
 on:
-  push:
-    branches:
-      - master
-    tags-ignore:
-      - '*.*.*'
+  release:
+    types: [published]
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/data-catalog-api:${{ github.sha }}
+
 jobs:
   build:
     name: build and push docker container
@@ -22,18 +21,16 @@ jobs:
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
 
-  deploy-dev:
-    name: deploy to nais dev-fss cluster
+deploy-prod:
+    name: deploy to nais prod-fss cluster
     needs: build
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
+          CLUSTER: prod-fss
           RESOURCE: naiserator.yaml
-          VARS: config-dev-fss.json
-          
-
-
+          VARS: config-prod-fss.json

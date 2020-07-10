@@ -97,7 +97,7 @@ def upsert_node(nodes: List[Node]):
 
         if res is None:
             metric_types.UPSERT_NODES_FAILED.inc()
-            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to upsert nodes"})
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": "Failed to upsert nodes"})
 
     metric_types.UPSERT_NODES_SUCCESS.inc()
     return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"Successfully upserted {len(nodes)} nodes"})
@@ -128,7 +128,7 @@ def upsert_node_and_create_edge(payload: NodeRelationPayload):
 
     if res is None:
         metric_types.UPSERT_NODE_AND_CREATE_EDGE_FAILED.inc()
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={'Failed to upsert and create edge'})
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": 'Failed to upsert and create edge'})
 
     metric_types.UPSERT_NODE_AND_CREATE_EDGE_SUCCESS.inc()
     return res
@@ -145,7 +145,7 @@ def delete_node(node_id: str):
 
     if res is None:
         metric_types.DELETE_NODES_FAILED.inc()
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete node"})
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": "Failed to delete node"})
 
     metric_types.DELETE_NODES_SUCCESS.inc()
     return res
@@ -162,7 +162,7 @@ def delete_node_by_type(node_type: str):
 
     if res is None:
         metric_types.DELETE_NODES_BY_TYPE_FAILED.inc()
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete node"})
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": "Failed to delete node"})
 
     metric_types.DELETE_NODES_BY_TYPE_SUCCESS.inc()
     return res
@@ -267,7 +267,7 @@ def delete_edge(source_id: str, target_id: str):
 
     if res is None:
         metric_types.DELETE_EDGES_FAILED.inc()
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete edge"})
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": "Failed to delete edge"})
 
     metric_types.DELETE_EDGES_SUCCESS.inc()
     return res
@@ -283,17 +283,21 @@ def delete_edge_by_label(edge_label: str):
 
     if res is None:
         metric_types.DELETE_EDGES_BY_LABEL_FAILED.inc()
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Failed to delete edge"})
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": "Failed to delete edge"})
 
     metric_types.DELETE_EDGES_BY_LABEL_SUCCESS.inc()
     return res
 
 
-def set_azure_max_throughput(throughput: int):
-    if throughput < 4000:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Throughput cannot be lower than 4000"})
+def set_azure_max_throughput(throughput):
+    if throughput.value < 4000:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"Error": "Throughput cannot be lower than 4000."})
+    if not (throughput.mode == 'manual' or throughput.mode == 'automatic'):
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"Error": "Throughput mode must be either 'manual' or 'automatic'."})
 
-    response = requests.get(os.environ["azure_throughput_api"],
-                            {'maxThroughput': throughput},
-                            headers={'x-functions-key': os.environ["azure_throughput_key"]})
-    return response
+    response = requests.post(os.environ["azure_throughput_api"],
+                             {'maxThroughput': str(throughput.value), "mode": throughput.mode},
+                             headers={'x-functions-key': os.environ["azure_throughput_key"]})
+    return response.text

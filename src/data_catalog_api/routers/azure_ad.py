@@ -9,6 +9,7 @@ from authlib.integrations.starlette_client import OAuth
 from starlette.responses import JSONResponse, RedirectResponse
 from data_catalog_api.utils.logger import Logger
 from data_catalog_api.utils import authentication
+from data_catalog_api.models.throughput import Throughput
 
 
 logger = Logger()
@@ -28,13 +29,13 @@ oauth.register(
 
 
 @router.put("/azure/throughput", tags=["Azure"])
-async def set_azure_max_throughput(throughput: int, request: Request):
+async def set_azure_max_throughput(throughput: Throughput, request: Request):
     """
     Set the max throughput for cosmosdb
     - **throughput**: new throughput value
     """
     if authentication.is_authorized(request.headers):
-        return store.set_azure_max_throughput(throughput)
+        return store.set_azure_max_throughput(throughput.value)
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})

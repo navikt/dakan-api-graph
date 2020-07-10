@@ -289,12 +289,8 @@ def delete_edge_by_label(edge_label: str):
     return res
 
 
-async def set_azure_max_throughput(throughput: int):
-    """
-    Set the max throughput for cosmosdb
-    - **throughput**: new throughput value
-    """
-    response = requests.put(os.environ["azure_throughput_api"],
+def set_azure_max_throughput(throughput: int):
+    response = requests.get(os.environ["azure_throughput_api"],
                             {'maxThroughput': throughput},
                             headers={'x-functions-key': os.environ["azure_throughput_key"]})
     return response

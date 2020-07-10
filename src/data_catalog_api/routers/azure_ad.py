@@ -35,7 +35,7 @@ async def set_azure_max_throughput(throughput: Throughput, request: Request):
     - **throughput**: new throughput value
     """
     if authentication.is_authorized(request.headers):
-        return store.set_azure_max_throughput(throughput.value)
+        return store.set_azure_max_throughput(throughput)
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})

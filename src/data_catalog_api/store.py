@@ -1,6 +1,7 @@
 import logging
 import os
 import json
+import requests
 from json import JSONDecodeError
 from typing import List
 from data_catalog_api.log_metrics import metric_types
@@ -286,3 +287,14 @@ def delete_edge_by_label(edge_label: str):
 
     metric_types.DELETE_EDGES_BY_LABEL_SUCCESS.inc()
     return res
+
+
+async def set_azure_max_throughput(throughput: int):
+    """
+    Set the max throughput for cosmosdb
+    - **throughput**: new throughput value
+    """
+    response = requests.put('https://azcosmosdbthroughput.azurewebsites.net/api/db-devthrottle',
+                            {'maxThroughput': throughput},
+                            headers={'x-functions-key': os.environ["azure_throughput_key"]})
+    return response

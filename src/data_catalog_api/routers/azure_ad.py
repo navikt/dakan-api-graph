@@ -1,12 +1,14 @@
 import json
 import os
 import requests
+from data_catalog_api import store
 from starlette import status
 from starlette.requests import Request
 from fastapi import APIRouter
 from authlib.integrations.starlette_client import OAuth
 from starlette.responses import JSONResponse, RedirectResponse
 from data_catalog_api.utils.logger import Logger
+from data_catalog_api.utils import authentication
 
 
 logger = Logger()
@@ -25,7 +27,20 @@ oauth.register(
 )
 
 
-@router.get("/login")
+@router.put("/azure/throughput", tags=["Azure"])
+async def set_azure_max_throughput(throughput: int, request: Request):
+    """
+    Set the max throughput for cosmosdb
+    - **throughput**: new throughput value
+    """
+    if authentication.is_authorized(request.headers):
+        return store.set_azure_max_throughput(throughput)
+    else:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})
+
+
+@router.get("/login", tags=["Azure"])
 async def login_via_azure(request: Request, redirect_url: str):
     redirect_uri = f'{os.environ["INGRESS"]}/auth'
     response = await oauth.azure.authorize_redirect(request, redirect_uri)
@@ -33,7 +48,7 @@ async def login_via_azure(request: Request, redirect_url: str):
     return response
 
 
-@router.get("/auth")
+@router.get("/auth", tags=["Azure"])
 async def auth_via_azure(request: Request):
     response = RedirectResponse(request.cookies.get("Redirect-url"))
     response.delete_cookie(key="Redirect-url")
@@ -60,7 +75,7 @@ async def auth_via_azure(request: Request):
     return response
 
 
-@router.get("/logout")
+@router.get("/logout", tags=["Azure"])
 async def logout_via_azure(request: Request, redirect_url: str):
     post_logout_url = f"?post_logout_redirect_uri={redirect_url}"
     logout_url = oauth.azure.server_metadata.get('end_session_endpoint', None)

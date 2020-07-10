@@ -290,6 +290,9 @@ def delete_edge_by_label(edge_label: str):
 
 
 def set_azure_max_throughput(throughput: int):
+    if throughput < 4000:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"through cannot be lower that 4000"})
+
     response = requests.get(os.environ["azure_throughput_api"],
                             {'maxThroughput': throughput},
                             headers={'x-functions-key': os.environ["azure_throughput_key"]})

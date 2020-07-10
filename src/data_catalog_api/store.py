@@ -294,7 +294,7 @@ async def set_azure_max_throughput(throughput: int):
     Set the max throughput for cosmosdb
     - **throughput**: new throughput value
     """
-    response = requests.put('https://azcosmosdbthroughput.azurewebsites.net/api/db-devthrottle',
+    response = requests.put(os.environ["azure_throughput_api"],
                             {'maxThroughput': throughput},
                             headers={'x-functions-key': os.environ["azure_throughput_key"]})
     return response

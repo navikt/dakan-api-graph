@@ -290,14 +290,18 @@ def delete_edge_by_label(edge_label: str):
 
 
 def set_azure_max_throughput(throughput):
-    if throughput.value < 4000:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
-                            content={"Error": "Throughput cannot be lower than 4000."})
     if not (throughput.mode == 'manual' or throughput.mode == 'automatic'):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
                             content={"Error": "Throughput mode must be either 'manual' or 'automatic'."})
+    if throughput.value < 4000 and throughput.mode == 'automatic':
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"Error": "Throughput cannot be lower than 4000 in automatic mode."})
+    if throughput.value < 1000 and throughput.mode == 'manual':
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,
+                            content={"Error": "Throughput cannot be lower than 1000 in manual mode."})
 
-    response = requests.post(os.environ["azure_throughput_api"],
-                             {'maxThroughput': str(throughput.value), "mode": throughput.mode},
-                             headers={'x-functions-key': os.environ["azure_throughput_key"]})
-    return response.text
+    res = requests.post(os.environ["azure_throughput_api"],
+                        params={'maxThroughput': throughput.value, "mode": throughput.mode},
+                        headers={'x-functions-key': os.environ["azure_throughput_key"]})
+
+    return json.loads(res.content)

@@ -303,5 +303,5 @@ def set_azure_max_throughput(throughput):
     res = requests.post(os.environ["azure_throughput_api"],
                         params={'maxThroughput': throughput.value, "mode": throughput.mode},
                         headers={'x-functions-key': os.environ["azure_throughput_key"]})
-
+    logger.log.info(res.content)
     return json.loads(res.content)

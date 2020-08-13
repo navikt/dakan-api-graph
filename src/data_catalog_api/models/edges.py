@@ -10,6 +10,7 @@ class Edge(BaseModel):
     label: str
     inV: str
     outV: str
+    properties: dict = {}
 
 
 class EdgeResponse(BaseModel):
@@ -20,3 +21,4 @@ class EdgeResponse(BaseModel):
     outV: str
     inVLabel: str
     outVLabel: str
+    properties: dict = {}

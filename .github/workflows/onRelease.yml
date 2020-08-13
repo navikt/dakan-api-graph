@@ -21,7 +21,7 @@ jobs:
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
 
-deploy-prod:
+  deploy-prod:
     name: deploy to nais prod-fss cluster
     needs: build
     if: github.ref == 'refs/heads/master'

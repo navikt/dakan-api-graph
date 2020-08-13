@@ -239,8 +239,14 @@ def get_edge_by_label(edge_label: str):
 
 def upsert_edge(edges: List[Edge]):
     for edge in edges:
-        query = f"g.V('{edge.outV}').as('out').V('{edge.inV}')" \
-                f".coalesce(__.inE('{edge.label}').where(outV().as('out')), addE('{edge.label}').from('out'))"
+        query = "g"
+        properties = ""
+        for key, value in edge.properties.items():
+            properties = f"{properties}.property('{key}','{value}')"
+
+        query += f".V('{edge.outV}').as('out').V('{edge.inV}')" \
+                 f".coalesce(__.inE('{edge.label}').where(outV().as('out')){properties}, " \
+                 f"addE('{edge.label}').from('out'){properties})"
 
         try:
             res = cosmosdb_conn.submit(query)

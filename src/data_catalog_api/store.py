@@ -177,7 +177,7 @@ def get_out_nodes(node_id: str, edge_label: str):
 
     if len(res) == 0:
         metric_types.GET_NODES_BY_OUTWARD_RELATION_NOT_FOUND.inc()
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+        return JSONResponse(status_code=status.HTTP_200_OK, content={})
 
     transform_node_response(res)
     metric_types.GET_NODES_BY_OUTWARD_RELATION_SUCCESS.inc()
@@ -193,7 +193,7 @@ def get_in_nodes(node_id: str, edge_label: str):
 
     if len(res) == 0:
         metric_types.GET_NODES_BY_INWARD_RELATION_NOT_FOUND.inc()
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+        return JSONResponse(status_code=status.HTTP_200_OK, content={})
 
     transform_node_response(res)
     metric_types.GET_NODES_BY_INWARD_RELATION_SUCCESS.inc()

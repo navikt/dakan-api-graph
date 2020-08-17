@@ -43,7 +43,7 @@ def get_node_by_id(node_id: str):
 
     if len(res) == 0:
         metric_types.GET_NODE_BY_ID_NOT_FOUND.inc()
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     if len(res) > 1:
         metric_types.GET_NODE_BY_ID_MULTIPLE_NODES_ERROR.inc()
@@ -67,7 +67,7 @@ def get_nodes_by_label(label: str, skip: int, limit: int):
 
     if len(res) == 0:
         metric_types.GET_NODE_BY_LABEL_NOT_FOUND.inc()
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     transform_node_response(res)
     metric_types.GET_NODE_BY_LABEL_SUCCESS.inc()
@@ -177,7 +177,7 @@ def get_out_nodes(node_id: str, edge_label: str):
 
     if len(res) == 0:
         metric_types.GET_NODES_BY_OUTWARD_RELATION_NOT_FOUND.inc()
-        return JSONResponse(status_code=status.HTTP_200_OK, content={})
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     transform_node_response(res)
     metric_types.GET_NODES_BY_OUTWARD_RELATION_SUCCESS.inc()
@@ -193,7 +193,7 @@ def get_in_nodes(node_id: str, edge_label: str):
 
     if len(res) == 0:
         metric_types.GET_NODES_BY_INWARD_RELATION_NOT_FOUND.inc()
-        return JSONResponse(status_code=status.HTTP_200_OK, content={})
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     transform_node_response(res)
     metric_types.GET_NODES_BY_INWARD_RELATION_SUCCESS.inc()
@@ -209,7 +209,7 @@ def get_edge_by_id(edge_id: str):
 
     if len(res) == 0:
         metric_types.GET_EDGE_BY_ID_NOT_FOUND.inc()
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     if len(res) > 1:
         metric_types.GET_EDGE_BY_ID_MULTIPLE_EDGES_ERROR.inc()
@@ -230,7 +230,7 @@ def get_edge_by_label(edge_label: str):
 
     if len(res) == 0:
         metric_types.GET_EDGE_BY_LABEL_NOT_FOUND.inc()
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={})
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     else:
         metric_types.GET_EDGE_BY_LABEL_SUCCESS.inc()

@@ -35,7 +35,7 @@ spec:
     enabled: true
   prometheus:
     enabled: true
-    path: /cosmosdb/metrics
+    path: /cosmosdb
   istio:
     enabled: false
   resources:

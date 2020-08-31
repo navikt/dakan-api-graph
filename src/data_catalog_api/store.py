@@ -241,17 +241,11 @@ def upsert_edge(edges: List[Edge]):
     for edge in edges:
         query = "g"
         properties = ""
-<<<<<<< HEAD
-        if edge.properties is not None:
-            for key, value in edge.properties.items():
-                properties = f"{properties}.property('{key}','{value}')"
-=======
         for key, value in edge.properties.items():
             if not isinstance(value, list):
                 properties = f"{properties}.property('{key}','{value}')"
             else:
                 properties = f"{properties}.property('{key}','{json.dumps(value)}')"
->>>>>>> 874e2a28db42a8ea493ac367db6f46459c4c4c16
 
         query += f".V('{edge.outV}').as('out').V('{edge.inV}')" \
                  f".coalesce(__.inE('{edge.label}').where(outV().as('out')){properties}, " \

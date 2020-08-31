@@ -36,7 +36,7 @@ def get_nodes_by_label(label: str, skip: int = 0, limit: int = None):
     return store.get_nodes_by_label(label, skip, limit)
 
 
-@metric_types.REQUESTS_TIME_GET_NODE_BY_OUTWARD_RELATION.time()
+# @metric_types.REQUESTS_TIME_GET_NODE_BY_OUTWARD_RELATION.time()
 @router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 def get_out_nodes(node_id: str, edge_label: str):
     """
@@ -48,7 +48,7 @@ def get_out_nodes(node_id: str, edge_label: str):
     return store.get_out_nodes(node_id, edge_label)
 
 
-@metric_types.REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION.time()
+# @metric_types.REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION.time()
 @router.get("/node/in/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 def get_in_nodes(node_id: str, edge_label: str):
     """

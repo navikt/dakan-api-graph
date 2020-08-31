@@ -172,15 +172,15 @@ def get_out_nodes(node_id: str, edge_label: str):
     try:
         res = cosmosdb_conn.submit(f"g.V('{node_id}').out('{edge_label}')")
     except ConnectionRefusedError:
-        metric_types.GET_NODES_BY_OUTWARD_RELATION_CONNECTION_REFUSED.inc()
+#        metric_types.GET_NODES_BY_OUTWARD_RELATION_CONNECTION_REFUSED.inc()
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if len(res) == 0:
-        metric_types.GET_NODES_BY_OUTWARD_RELATION_NOT_FOUND.inc()
+#        metric_types.GET_NODES_BY_OUTWARD_RELATION_NOT_FOUND.inc()
         return JSONResponse(status_code=status.HTTP_200_OK, content={})
 
     transform_node_response(res)
-    metric_types.GET_NODES_BY_OUTWARD_RELATION_SUCCESS.inc()
+#    metric_types.GET_NODES_BY_OUTWARD_RELATION_SUCCESS.inc()
     return res
 
 
@@ -188,15 +188,15 @@ def get_in_nodes(node_id: str, edge_label: str):
     try:
         res = cosmosdb_conn.submit(f"g.V('{node_id}').in('{edge_label}')")
     except ConnectionRefusedError:
-        metric_types.GET_NODES_BY_INWARD_RELATION_CONNECTION_REFUSED.inc()
+#         metric_types.GET_NODES_BY_INWARD_RELATION_CONNECTION_REFUSED.inc()
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
     if len(res) == 0:
-        metric_types.GET_NODES_BY_INWARD_RELATION_NOT_FOUND.inc()
+#         metric_types.GET_NODES_BY_INWARD_RELATION_NOT_FOUND.inc()
         return JSONResponse(status_code=status.HTTP_200_OK, content={})
 
     transform_node_response(res)
-    metric_types.GET_NODES_BY_INWARD_RELATION_SUCCESS.inc()
+#     metric_types.GET_NODES_BY_INWARD_RELATION_SUCCESS.inc()
     return res
 
 
@@ -241,8 +241,9 @@ def upsert_edge(edges: List[Edge]):
     for edge in edges:
         query = "g"
         properties = ""
-        for key, value in edge.properties.items():
-            properties = f"{properties}.property('{key}','{value}')"
+        if edge.properties is not None:
+            for key, value in edge.properties.items():
+                properties = f"{properties}.property('{key}','{value}')"
 
         query += f".V('{edge.outV}').as('out').V('{edge.inV}')" \
                  f".coalesce(__.inE('{edge.label}').where(outV().as('out')){properties}, " \

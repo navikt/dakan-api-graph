@@ -11,8 +11,8 @@ from starlette.responses import JSONResponse
 router = APIRouter()
 
 
-@metric_types.REQUEST_TIME_GET_EDGE_BY_ID.time()
 @router.get("/edge/{id}", response_model=List[EdgeResponse], tags=["Edge"])
+@metric_types.REQUEST_TIME_GET_EDGE_BY_ID.time()
 def get_edge_by_id(id: str):
     """
     Get edge by id:
@@ -22,8 +22,8 @@ def get_edge_by_id(id: str):
     return store.get_edge_by_id(id)
 
 
-@metric_types.REQUEST_TIME_GET_EDGE_BY_LABEL.time()
 @router.get("/edge/label/{edge_label}", response_model=List[EdgeResponse], tags=["Edge"])
+@metric_types.REQUEST_TIME_GET_EDGE_BY_LABEL.time()
 def get_edge_by_label(edge_label: str):
     """
     Get edge by label:
@@ -33,8 +33,8 @@ def get_edge_by_label(edge_label: str):
     return store.get_edge_by_label(edge_label)
 
 
-@metric_types.REQUESTS_TIME_UPSERT_EDGES.time()
 @router.put("/edge", tags=["Edge"])
+@metric_types.REQUESTS_TIME_UPSERT_EDGES.time()
 def put_edge(edges: List[Edge], request: Request):
     if authentication.is_authorized(request.headers):
         return store.upsert_edge(edges)
@@ -43,8 +43,8 @@ def put_edge(edges: List[Edge], request: Request):
                             content={"Error": "This operation requires authorization"})
 
 
-@metric_types.REQUESTS_TIME_DELETE_EDGES.time()
 @router.delete("/edge", tags=["Edge"])
+@metric_types.REQUESTS_TIME_DELETE_EDGES.time()
 def delete_edge(n1: str, n2: str, request: Request):
     """
     Delete edge by n1 and n2
@@ -59,8 +59,8 @@ def delete_edge(n1: str, n2: str, request: Request):
                             content={"Error": "This operation requires authorization"})
 
 
-@metric_types.REQUESTS_TIME_DELETE_EDGES_BY_LABEL.time()
 @router.delete("/edge/{label}", tags=["Edge"])
+@metric_types.REQUESTS_TIME_DELETE_EDGES_BY_LABEL.time()
 def delete_edge(label: str, request: Request):
     """
     Delete edge by label

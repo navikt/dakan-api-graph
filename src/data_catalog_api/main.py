@@ -1,10 +1,9 @@
 import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from data_catalog_api.routers import nodes, edges, health, azure_ad
+from data_catalog_api.routers import nodes, edges, health, azure_ad, metrics
 from fastapi.openapi.docs import get_swagger_ui_html
 from starlette.middleware.cors import CORSMiddleware
-from starlette_exporter import PrometheusMiddleware, handle_metrics
 from starlette.middleware.sessions import SessionMiddleware
 
 
@@ -36,8 +35,7 @@ def custom_swagger_ui_html():
     )
 
 
-subapi.add_middleware(PrometheusMiddleware)
-subapi.add_route("/metrics", handle_metrics)
+subapi.include_router(metrics.router)
 subapi.include_router(nodes.router)
 subapi.include_router(edges.router)
 subapi.include_router(health.router)

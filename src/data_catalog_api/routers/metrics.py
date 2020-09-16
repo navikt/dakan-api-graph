@@ -1,6 +1,6 @@
-import prometheus_client
+import prometheus_client as pc
 from fastapi import APIRouter, status
-from fastapi.responses import Response
+from starlette.responses import Response
 
 router = APIRouter()
 
@@ -11,4 +11,5 @@ def metrics():
     Get metrics:
 
     """
-    return Response(status_code=status.HTTP_200_OK, content=prometheus_client.generate_latest())
+    headers = {'Content-Type': pc.CONTENT_TYPE_LATEST}
+    return Response(pc.generate_latest(pc.REGISTRY), status_code=status.HTTP_200_OK, headers=headers)

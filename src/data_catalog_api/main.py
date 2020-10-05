@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 from fastapi.staticfiles import StaticFiles
 from data_catalog_api.routers import nodes, edges, health, azure_ad, metrics
 from fastapi.openapi.docs import get_swagger_ui_html
@@ -9,20 +10,20 @@ from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
 subapi = FastAPI(docs_url='/docs', swagger_static={"favicon": "/static/favicon.png"},
-                 openapi_prefix="/cosmosdb")
+                 openapi_prefix="/cosmosdb", default_response_class=ORJSONResponse)
 app.mount("/static", StaticFiles(directory="src/data_catalog_api/static"), name="static")
 app.mount("/cosmosdb", subapi)
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # we need this to save temporary code & state in session
-# app.add_middleware(SessionMiddleware, secret_key=os.environ["session_secret_key"])
+app.add_middleware(SessionMiddleware, secret_key=os.environ["session_secret_key"])
 
 
 @subapi.get("/docs", include_in_schema=False)

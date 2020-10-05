@@ -1,6 +1,6 @@
 {
   "application_name": "data-catalog-api",
   "ingress": "https://data.nais.preprod.local/cosmosdb",
-  "ingress_nais_io": "https://data-catalog-api.dev-fss.nais.io",
+  "ingress_nais_io": "https://data.dev-fss.nais.io/cosmosdb",
   "team": "dataplattform"
 }

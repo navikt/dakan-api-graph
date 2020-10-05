@@ -13,16 +13,16 @@ subapi = FastAPI(docs_url='/docs', swagger_static={"favicon": "/static/favicon.p
 app.mount("/static", StaticFiles(directory="src/data_catalog_api/static"), name="static")
 app.mount("/cosmosdb", subapi)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # we need this to save temporary code & state in session
-app.add_middleware(SessionMiddleware, secret_key=os.environ["session_secret_key"])
+# app.add_middleware(SessionMiddleware, secret_key=os.environ["session_secret_key"])
 
 
 @subapi.get("/docs", include_in_schema=False)

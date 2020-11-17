@@ -299,7 +299,7 @@ def delete_edge_by_label(edge_label: str):
 
 
 def delete_all_edges_of_node(node_id: str):
-    query = f"g.V({node_id}).bothE().drop()"
+    query = f"g.V('{node_id}').bothE().drop()"
     try:
         res = cosmosdb_conn.submit(query)
     except ConnectionRefusedError:

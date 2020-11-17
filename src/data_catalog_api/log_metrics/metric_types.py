@@ -187,5 +187,5 @@ DELETE_ALL_EDGES_OF_NODE_FAILED = Counter('data_catalog_api_counter_delete_all_e
 DELETE_ALL_EDGES_OF_NODE_CONNECTION_REFUSED = Counter('data_catalog_api_counter_delete_all_edges_of_node_connection_refused',
                                                       'Counter delete all edges of node connection refused')
 
-REQUEST_TIME_DELETE_ALL_EDGES_OF_NODE = Summary('data_catalog_api_request_time_delete_all_edges_of_node',
+REQUESTS_TIME_DELETE_ALL_EDGES_OF_NODE = Summary('data_catalog_api_request_time_delete_all_edges_of_node',
                                                 'Time spent processing delete all edges of node')

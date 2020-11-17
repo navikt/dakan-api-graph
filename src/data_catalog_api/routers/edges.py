@@ -72,3 +72,18 @@ def delete_edge(label: str, request: Request):
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})
+
+
+@router.delete("/edges/all/{node_id}", tags=["Edge"])
+@metric_types.REQUESTS_TIME_DELETE_ALL_EDGES_OF_NODE.time()
+def delete_all_edge_of_node(node_id: str, request: Request):
+    """
+    Delete all edges of a node
+
+    - **node_id**: Id of node
+    """
+    if authentication.is_authorized(request.headers):
+        return store.delete_all_edges_of_node(node_id)
+    else:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})

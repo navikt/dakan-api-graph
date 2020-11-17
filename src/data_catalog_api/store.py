@@ -298,6 +298,22 @@ def delete_edge_by_label(edge_label: str):
     return res
 
 
+def delete_all_edges_of_node(node_id: str):
+    query = f"g.V({node_id}).bothE().drop()"
+    try:
+        res = cosmosdb_conn.submit(query)
+    except ConnectionRefusedError:
+        metric_types.DELETE_ALL_EDGES_OF_NODE_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
+    if res is None:
+        metric_types.DELETE_ALL_EDGES_OF_NODE_FAILED.inc()
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": "Failed to delete edge"})
+
+    metric_types.DELETE_ALL_EDGES_OF_NODE_SUCCESS.inc()
+    return res
+
+
 def set_azure_max_throughput(throughput):
     if not (throughput.mode == 'manual' or throughput.mode == 'automatic'):
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST,

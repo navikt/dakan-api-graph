@@ -28,6 +28,19 @@ GET_NODE_BY_LABEL_CONNECTION_REFUSED = Counter('data_catalog_api_counter_get_nod
 REQUEST_TIME_GET_NODE_BY_LABEL = Summary('data_catalog_api_request_time_get_node_by_label',
                                          'Time spent processing get request')
 
+# Valid nodes by label
+GET_VALID_NODE_BY_LABEL_SUCCESS = Counter('data_catalog_api_counter_get_valid_node_by_label_success',
+                                    'Counter get valid node by label endpoint success')
+
+GET_VALID_NODE_BY_LABEL_NOT_FOUND = Counter('data_catalog_api_counter_get_valid_node_by_label_not_found',
+                                      'Counter get valid node by label none found')
+
+GET_VALID_NODE_BY_LABEL_CONNECTION_REFUSED = Counter('data_catalog_api_counter_get_valid_node_by_label_connection_refused',
+                                               'Counter get valid node by label connection refused')
+
+REQUEST_TIME_GET_VALID_NODE_BY_LABEL = Summary('data_catalog_api_request_time_get_valid_node_by_label',
+                                         'Time spent processing get request')
+
 # Nodes by outward relation
 GET_NODES_BY_OUTWARD_RELATION_SUCCESS = Counter('data_catalog_api_counter_get_nodes_by_outward_relation_success',
                                                 'Counter get nodes by outward relation endpoint success')

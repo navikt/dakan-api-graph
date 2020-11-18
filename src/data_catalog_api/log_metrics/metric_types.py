@@ -42,6 +42,23 @@ GET_NODES_BY_OUTWARD_RELATION_CONNECTION_REFUSED = Counter(
 REQUESTS_TIME_GET_NODE_BY_OUTWARD_RELATION = Summary('data_catalog_api_request_time_get_nodes_by_outward_relation',
                                                      'Time spent processing get request')
 
+# Valid nodes by outward relation
+GET_VALID_NODES_BY_OUTWARD_RELATION_SUCCESS = Counter(
+    'data_catalog_api_counter_get_valid_nodes_by_outward_relation_success',
+    'Counter get valid nodes by outward relation endpoint success')
+
+GET_VALID_NODES_BY_OUTWARD_RELATION_NOT_FOUND = Counter(
+    'data_catalog_api_counter_get_valid_nodes_by_outward_relation_not_found',
+    'Counter get valid nodes by outward relation none found')
+
+GET_VALID_NODES_BY_OUTWARD_RELATION_CONNECTION_REFUSED = Counter(
+    'data_catalog_api_counter_get_valid_nodes_by_outward_relation_connection_refused',
+    'Counter get valid nodes by outward relation connection refused')
+
+REQUESTS_TIME_GET_VALID_NODE_BY_OUTWARD_RELATION = Summary(
+    'data_catalog_api_request_time_get_valid_nodes_by_outward_relation',
+    'Time spent processing get request')
+
 # Nodes by inward relation
 GET_NODES_BY_INWARD_RELATION_SUCCESS = Counter('data_catalog_api_counter_get_nodes_by_inward_relation_success',
                                                'Counter get nodes by inward relation endpoint success')
@@ -166,16 +183,16 @@ REQUESTS_TIME_DELETE_EDGES = Summary('data_catalog_api_request_time_delete_edges
 
 # Delete Edges by label
 DELETE_EDGES_BY_LABEL_SUCCESS = Counter('data_catalog_api_counter_delete_edges_by_label_success',
-                               'Counter delete edges by label endpoint success')
+                                        'Counter delete edges by label endpoint success')
 
 DELETE_EDGES_BY_LABEL_FAILED = Counter('data_catalog_api_counter_delete_edges_by_label_failed',
-                              'Counter delete edges by label endpoint failed')
+                                       'Counter delete edges by label endpoint failed')
 
 DELETE_EDGES_BY_LABEL_CONNECTION_REFUSED = Counter('data_catalog_api_counter_delete_edges_by_label_connection_refused',
-                                          'Counter delete edges by label connection refused')
+                                                   'Counter delete edges by label connection refused')
 
 REQUESTS_TIME_DELETE_EDGES_BY_LABEL = Summary('data_catalog_api_request_time_delete_edges_by_label',
-                                     'Time spent processing delete edge by label request')
+                                              'Time spent processing delete edge by label request')
 
 # Delete all edges of a node
 DELETE_ALL_EDGES_OF_NODE_SUCCESS = Counter('data_catalog_api_counter_delete_all_edges_of_node_success',
@@ -184,8 +201,10 @@ DELETE_ALL_EDGES_OF_NODE_SUCCESS = Counter('data_catalog_api_counter_delete_all_
 DELETE_ALL_EDGES_OF_NODE_FAILED = Counter('data_catalog_api_counter_delete_all_edges_of_node_failed',
                                           'Counter delete all edges of node failed')
 
-DELETE_ALL_EDGES_OF_NODE_CONNECTION_REFUSED = Counter('data_catalog_api_counter_delete_all_edges_of_node_connection_refused',
-                                                      'Counter delete all edges of node connection refused')
+DELETE_ALL_EDGES_OF_NODE_CONNECTION_REFUSED = Counter(
+    'data_catalog_api_counter_delete_all_edges_of_node_connection_refused',
+    'Counter delete all edges of node connection refused')
 
-REQUESTS_TIME_DELETE_ALL_EDGES_OF_NODE = Summary('data_catalog_api_request_time_delete_all_edges_of_node',
-                                                'Time spent processing delete all edges of node')
+REQUESTS_TIME_DELETE_ALL_EDGES_OF_NODE = Summary(
+    'data_catalog_api_request_time_delete_all_edges_of_node',
+    'Time spent processing delete all edges of node')

@@ -73,6 +73,23 @@ GET_NODES_BY_INWARD_RELATION_CONNECTION_REFUSED = Counter(
 REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION = Summary('data_catalog_api_request_time_get_nodes_by_inward_relation',
                                                     'Time spent processing get request')
 
+# Valid nodes by inward relation
+GET_VALID_NODES_BY_INWARD_RELATION_SUCCESS = Counter(
+    'data_catalog_api_counter_get_valid_nodes_by_inward_relation_success',
+    'Counter get valid nodes by inward relation endpoint success')
+
+GET_VALID_NODES_BY_INWARD_RELATION_NOT_FOUND = Counter(
+    'data_catalog_api_counter_get_valid_nodes_by_inward_relation_not_found',
+    'Counter get valid nodes by inward relation none found')
+
+GET_VALID_NODES_BY_INWARD_RELATION_CONNECTION_REFUSED = Counter(
+    'data_catalog_api_counter_get_valid_nodes_by_inward_relation_connection_refused',
+    'Counter get valid nodes by inward relation connection refused')
+
+REQUESTS_TIME_GET_VALID_NODE_BY_INWARD_RELATION = Summary(
+    'data_catalog_api_request_time_get_valid_nodes_by_inward_relation',
+    'Time spent processing get request')
+
 #  Upsert Node And Create Edge
 UPSERT_NODE_AND_CREATE_EDGE_SUCCESS = Counter('data_catalog_api_counter_upsert_node_and_create_edge_success',
                                               'Counter upsert node and edge endpoint success')

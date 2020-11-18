@@ -186,7 +186,7 @@ def get_out_nodes(node_id: str, edge_label: str):
 
 def get_out_valid_nodes(node_id: str, edge_label: str):
     try:
-        res = cosmosdb_conn.submit(f"g.V('{node_id}').has('valid', 'true').out('{edge_label}')")
+        res = cosmosdb_conn.submit(f"g.V('{node_id}').out('{edge_label}').has('valid', 'true')")
     except ConnectionRefusedError:
         metric_types.GET_VALID_NODES_BY_OUTWARD_RELATION_CONNECTION_REFUSED.inc()
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
@@ -213,6 +213,22 @@ def get_in_nodes(node_id: str, edge_label: str):
 
     transform_node_response(res)
     metric_types.GET_NODES_BY_INWARD_RELATION_SUCCESS.inc()
+    return res
+
+
+def get_in_valid_nodes(node_id: str, edge_label: str):
+    try:
+        res = cosmosdb_conn.submit(f"g.V('{node_id}').in('{edge_label}').has('valid', 'true')")
+    except ConnectionRefusedError:
+        metric_types.GET_VALID_NODES_BY_INWARD_RELATION_CONNECTION_REFUSED.inc()
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
+    if len(res) == 0:
+        metric_types.GET_VALID_NODES_BY_INWARD_RELATION_NOT_FOUND.inc()
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
+
+    transform_node_response(res)
+    metric_types.GET_VALID_NODES_BY_INWARD_RELATION_SUCCESS.inc()
     return res
 
 

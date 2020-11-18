@@ -48,6 +48,18 @@ def get_out_nodes(node_id: str, edge_label: str):
     return store.get_out_nodes(node_id, edge_label)
 
 
+@router.get("/node/valid/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
+@metric_types.REQUESTS_TIME_GET_VALID_NODE_BY_OUTWARD_RELATION.time()
+def get_out_valid_nodes(node_id: str, edge_label: str):
+    """
+    Get all nodes with outgoing relations to node_id
+
+    - **node_id**: ID of node that has relations
+    - **edge_label**: type of relation
+    """
+    return store.get_out_valid_nodes(node_id, edge_label)
+
+
 @router.get("/node/in/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 @metric_types.REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION.time()
 def get_in_nodes(node_id: str, edge_label: str):

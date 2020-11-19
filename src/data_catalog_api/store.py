@@ -106,10 +106,15 @@ def upsert_node(nodes: List[Node]):
 
         if 'valid_from' not in node.properties.items():
             params = f"{params}.property('valid_from',{today})"
+            params_no_partition_key = f"{params_no_partition_key}.property('valid_from',{today})"
+
         if 'valid_to' not in node.properties.items():
             params = f"{params}.property('valid_to','')"
+            params_no_partition_key = f"{params_no_partition_key}.property('valid_to','')"
+
         if 'valid' not in node.properties.items():
             params = f"{params}.property('valid','true')"
+            params_no_partition_key = f"{params_no_partition_key}.property('valid','true')"
 
         for key, value in node.properties.items():
             clean_value = json.dumps(value).replace("'", "*")

@@ -124,7 +124,7 @@ def upsert_node(nodes: List[Node]):
 
         query += f".V().has('label','{node.label}').has('id','{node.id}')" \
                  f".fold().coalesce(unfold(){params_no_partition_key}," \
-                 f"addV('{node.label}').property('id','{node.id}'){params}"
+                 f"addV('{node.label}').property('id','{node.id}'){params})"
 
         try:
             res = cosmosdb_conn.submit(query)

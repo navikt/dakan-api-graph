@@ -97,7 +97,7 @@ def get_valid_nodes_by_label(label: str, skip: int, limit: int):
 
 def upsert_node(nodes: List[Node]):
 
-    today = json.dumps(datetime.now().isoformat()).replace("'", "*")
+    today = datetime.now().isoformat()
 
     for node in nodes:
         query = "g"

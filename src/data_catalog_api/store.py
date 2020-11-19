@@ -13,6 +13,7 @@ from data_catalog_api.utils.logger import Logger
 from fastapi import status
 from fastapi.responses import JSONResponse
 from data_catalog_api.exceptions.exceptions import MultipleNodesInDbError
+from datetime import datetime
 
 logger = Logger()
 cosmosdb_conn = CosmosConnector()
@@ -95,6 +96,9 @@ def get_valid_nodes_by_label(label: str, skip: int, limit: int):
 
 
 def upsert_node(nodes: List[Node]):
+
+    today = datetime.now().isoformat()
+
     for node in nodes:
         query = "g"
         params = ""
@@ -107,7 +111,9 @@ def upsert_node(nodes: List[Node]):
 
         query += f".V().has('label','{node.label}').has('id','{node.id}')" \
                  f".fold().coalesce(unfold(){params_no_partition_key}," \
-                 f"addV('{node.label}').property('id','{node.id}'){params})"
+                 f"addV('{node.label}').property('id','{node.id}').property('valid_from', {today})" \
+                 f".property('valid_to', '').property('valid', 'true'){params}" \
+
         try:
             res = cosmosdb_conn.submit(query)
         except ConnectionRefusedError:

@@ -36,6 +36,17 @@ def get_nodes_by_label(label: str, skip: int = 0, limit: int = None):
     return store.get_nodes_by_label(label, skip, limit)
 
 
+@router.get("/nodes/valid/{label}", response_model=List[Node], tags=["Node"])
+@metric_types.REQUEST_TIME_GET_VALID_NODE_BY_LABEL.time()
+def get_nodes_by_label(label: str, skip: int = 0, limit: int = None):
+    """
+    Get nodes by label:
+
+    - **label**: label of node
+    """
+    return store.get_valid_nodes_by_label(label, skip, limit)
+
+
 @router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 @metric_types.REQUESTS_TIME_GET_NODE_BY_OUTWARD_RELATION.time()
 def get_out_nodes(node_id: str, edge_label: str):
@@ -48,6 +59,18 @@ def get_out_nodes(node_id: str, edge_label: str):
     return store.get_out_nodes(node_id, edge_label)
 
 
+@router.get("/node/valid/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
+@metric_types.REQUESTS_TIME_GET_VALID_NODE_BY_OUTWARD_RELATION.time()
+def get_out_valid_nodes(node_id: str, edge_label: str):
+    """
+    Get all nodes with outgoing relations to node_id
+
+    - **node_id**: ID of node that has relations
+    - **edge_label**: type of relation
+    """
+    return store.get_out_valid_nodes(node_id, edge_label)
+
+
 @router.get("/node/in/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 @metric_types.REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION.time()
 def get_in_nodes(node_id: str, edge_label: str):
@@ -58,6 +81,18 @@ def get_in_nodes(node_id: str, edge_label: str):
     - **edge_label**: type of relation
     """
     return store.get_in_nodes(node_id, edge_label)
+
+
+@router.get("/node/valid/in/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
+@metric_types.REQUESTS_TIME_GET_VALID_NODE_BY_INWARD_RELATION.time()
+def get_out_valid_nodes(node_id: str, edge_label: str):
+    """
+    Get all nodes with outgoing relations to node_id
+
+    - **node_id**: ID of node that has relations
+    - **edge_label**: type of relation
+    """
+    return store.get_in_valid_nodes(node_id, edge_label)
 
 
 @router.put("/node", tags=["Node"])

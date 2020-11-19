@@ -103,6 +103,14 @@ def upsert_node(nodes: List[Node]):
         query = "g"
         params = ""
         params_no_partition_key = ""
+
+        if 'valid_from' not in node.properties.items():
+            params = f"{params}.property('valid_from',{today})"
+        if 'valid_to' not in node.properties.items():
+            params = f"{params}.property('valid_to','')"
+        if 'valid' not in node.properties.items():
+            params = f"{params}.property('valid','true')"
+
         for key, value in node.properties.items():
             clean_value = json.dumps(value).replace("'", "*")
             params = f"{params}.property('{key}','{clean_value}')"
@@ -111,8 +119,7 @@ def upsert_node(nodes: List[Node]):
 
         query += f".V().has('label','{node.label}').has('id','{node.id}')" \
                  f".fold().coalesce(unfold(){params_no_partition_key}," \
-                 f"addV('{node.label}').property('id','{node.id}').property('valid_from', {today})" \
-                 f".property('valid_to', '').property('valid', 'true'){params}" \
+                 f"addV('{node.label}').property('id','{node.id}'){params}" \
 
         try:
             res = cosmosdb_conn.submit(query)

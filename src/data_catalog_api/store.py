@@ -97,7 +97,7 @@ def get_valid_nodes_by_label(label: str, skip: int, limit: int):
 
 def upsert_node(nodes: List[Node]):
 
-    today = datetime.now().isoformat()
+    today = json.dumps(datetime.now().isoformat()).replace("'", "*")
 
     for node in nodes:
         query = "g"
@@ -105,8 +105,8 @@ def upsert_node(nodes: List[Node]):
         params_no_partition_key = ""
 
         if 'valid_from' not in node.properties.items():
-            params = f"{params}.property('valid_from',{today})"
-            params_no_partition_key = f"{params_no_partition_key}.property('valid_from',{today})"
+            params = f"{params}.property('valid_from','{today}')"
+            params_no_partition_key = f"{params_no_partition_key}.property('valid_from','{today}')"
 
         if 'valid_to' not in node.properties.items():
             params = f"{params}.property('valid_to','')"

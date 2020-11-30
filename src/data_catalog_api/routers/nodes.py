@@ -70,6 +70,16 @@ def put_node(nodes: List[Node], request: Request):
                             content={"Error": "This operation requires authorization"})
 
 
+@router.put("/invalidate/node", tags=["Node"])
+@metric_types.REQUESTS_TIME_INVALIDATE_NODES.time()
+def put_node(node_ids: [str], request: Request):
+    if authentication.is_authorized(request.headers):
+        return store.invalidate_nodes(node_ids)
+    else:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})
+
+
 @router.delete("/node/delete/id/{node_id}", tags=["Node"])
 @metric_types.REQUESTS_TIME_DELETE_NODES.time()
 def delete_node(node_id: str, request: Request):

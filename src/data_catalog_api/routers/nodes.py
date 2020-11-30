@@ -70,7 +70,7 @@ def put_node(nodes: List[Node], request: Request):
                             content={"Error": "This operation requires authorization"})
 
 
-@router.put("/invalidate/node", tags=["Node"])
+@router.put("/invalidate/nodes", tags=["Node"])
 @metric_types.REQUESTS_TIME_INVALIDATE_NODES.time()
 def put_node(node_ids: [str], request: Request):
     if authentication.is_authorized(request.headers):

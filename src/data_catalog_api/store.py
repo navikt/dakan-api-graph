@@ -236,7 +236,7 @@ def get_in_nodes(node_id: str, edge_label: str, valid_nodes: bool):
     return res
 
 
-def invalidate_nodes(node_ids: [str]):
+def invalidate_nodes(node_ids: List[str]):
     today = datetime.now().isoformat()
 
     for node_id in node_ids:

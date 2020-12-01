@@ -72,7 +72,7 @@ def put_node(nodes: List[Node], request: Request):
 
 @router.put("/invalidate/nodes", tags=["Node"])
 @metric_types.REQUESTS_TIME_INVALIDATE_NODES.time()
-def put_node(node_ids: [str], request: Request):
+def put_node(node_ids: List[str], request: Request):
     if authentication.is_authorized(request.headers):
         return store.invalidate_nodes(node_ids)
     else:

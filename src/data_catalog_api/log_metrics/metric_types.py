@@ -110,6 +110,19 @@ DELETE_NODES_BY_TYPE_CONNECTION_REFUSED = Counter('data_catalog_api_counter_dele
 REQUESTS_TIME_DELETE_NODES_BY_TYPE = Summary('data_catalog_api_request_time_delete_nodes_by_type',
                                              'Time spent processing delete by type request')
 
+# Invalidate Nodes By Type
+INVALIDATE_NODES_SUCCESS = Counter('data_catalog_api_counter_invalidate_nodes_success',
+                                   'Counter invalidate nodes endpoint success')
+
+INVALIDATE_NODES_FAILED = Counter('data_catalog_api_counter_invalidate_nodes_failed',
+                                  'Counter invalidate nodes endpoint failed')
+
+INVALIDATE_NODES_CONNECTION_REFUSED = Counter('data_catalog_api_counter_invalidate_nodes_connection_refused',
+                                              'Counter invalidate nodes connection refused')
+
+REQUESTS_TIME_INVALIDATE_NODES = Summary('data_catalog_api_request_time_invalidate_nodes',
+                                         'Time spent processing invalidate request')
+
 # Edge by id
 GET_EDGE_BY_ID_SUCCESS = Counter('data_catalog_api_counter_get_edge_by_id_success',
                                  'Counter get edge by id endpoint success')

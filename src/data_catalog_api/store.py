@@ -192,9 +192,12 @@ def delete_node_by_type(node_type: str):
     return res
 
 
-def get_out_nodes(node_id: str, edge_label: str, valid_nodes: bool):
+def get_out_nodes(node_id: str, edge_label: str, skip: int, limit: int, valid_nodes: bool):
     try:
         query = f"g.V('{node_id}').out('{edge_label}')"
+
+        if limit is not None:
+            query += f".range({skip}, {skip + limit})"
 
         if valid_nodes:
             query += ".has('valid', 'true')"
@@ -214,9 +217,12 @@ def get_out_nodes(node_id: str, edge_label: str, valid_nodes: bool):
     return res
 
 
-def get_in_nodes(node_id: str, edge_label: str, valid_nodes: bool):
+def get_in_nodes(node_id: str, edge_label: str, skip: int, limit: int, valid_nodes: bool):
     try:
         query = f"g.V('{node_id}').in('{edge_label}')"
+
+        if limit is not None:
+            query += f".range({skip}, {skip + limit})"
 
         if valid_nodes:
             query += ".has('valid', 'true')"
@@ -234,6 +240,28 @@ def get_in_nodes(node_id: str, edge_label: str, valid_nodes: bool):
     transform_node_response(res)
     metric_types.GET_NODES_BY_INWARD_RELATION_SUCCESS.inc()
     return res
+
+
+def invalidate_nodes(node_ids: List[str]):
+    today = datetime.now().isoformat()
+
+    for node_id in node_ids:
+
+        query = f"g.V('{node_id}').property('valid', 'false').property('valid_to', '{today}')"
+
+        try:
+            res = cosmosdb_conn.submit(query)
+        except ConnectionRefusedError:
+            metric_types.INVALIDATE_NODES_CONNECTION_REFUSED.inc()
+            return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                                content={"Error": "Connection refused"})
+
+        if res is None:
+            metric_types.INVALIDATE_NODES_FAILED.inc()
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"Error": "Failed to invalidate nodes"})
+
+    metric_types.INVALIDATE_NODES_SUCCESS.inc()
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"Status": f"Successfully invalidated {len(node_ids)} nodes"})
 
 
 def get_edge_by_id(edge_id: str):

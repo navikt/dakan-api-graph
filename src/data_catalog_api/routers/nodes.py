@@ -38,26 +38,26 @@ def get_nodes_by_label(label: str, skip: int = 0, limit: int = None, valid_nodes
 
 @router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 @metric_types.REQUESTS_TIME_GET_NODE_BY_OUTWARD_RELATION.time()
-def get_out_nodes(node_id: str, edge_label: str, valid_nodes: bool = True):
+def get_out_nodes(node_id: str, edge_label: str, skip: int = 0, limit: int = None, valid_nodes: bool = True):
     """
     Get all nodes with outgoing relations to node_id
 
     - **node_id**: ID of node that has relations
     - **edge_label**: type of relation
     """
-    return store.get_out_nodes(node_id, edge_label, valid_nodes)
+    return store.get_out_nodes(node_id, edge_label, skip, limit, valid_nodes)
 
 
 @router.get("/node/in/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
 @metric_types.REQUESTS_TIME_GET_NODE_BY_INWARD_RELATION.time()
-def get_in_nodes(node_id: str, edge_label: str, valid_nodes: bool = True):
+def get_in_nodes(node_id: str, edge_label: str, skip: int = 0, limit: int = None, valid_nodes: bool = True):
     """
     Get all nodes with incoming relations to node_id
 
     - **node_id**: ID of node that has relations
     - **edge_label**: type of relation
     """
-    return store.get_in_nodes(node_id, edge_label, valid_nodes)
+    return store.get_in_nodes(node_id, edge_label, skip, limit, valid_nodes)
 
 
 @router.put("/node", tags=["Node"])
@@ -65,6 +65,16 @@ def get_in_nodes(node_id: str, edge_label: str, valid_nodes: bool = True):
 def put_node(nodes: List[Node], request: Request):
     if authentication.is_authorized(request.headers):
         return store.upsert_node(nodes)
+    else:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
+                            content={"Error": "This operation requires authorization"})
+
+
+@router.put("/invalidate/nodes", tags=["Node"])
+@metric_types.REQUESTS_TIME_INVALIDATE_NODES.time()
+def put_node(node_ids: List[str], request: Request):
+    if authentication.is_authorized(request.headers):
+        return store.invalidate_nodes(node_ids)
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})

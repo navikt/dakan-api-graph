@@ -192,9 +192,12 @@ def delete_node_by_type(node_type: str):
     return res
 
 
-def get_out_nodes(node_id: str, edge_label: str, valid_nodes: bool):
+def get_out_nodes(node_id: str, edge_label: str, skip: int, limit: int, valid_nodes: bool):
     try:
         query = f"g.V('{node_id}').out('{edge_label}')"
+
+        if limit is not None:
+            query += f".range({skip}, {skip + limit})"
 
         if valid_nodes:
             query += ".has('valid', 'true')"
@@ -214,9 +217,12 @@ def get_out_nodes(node_id: str, edge_label: str, valid_nodes: bool):
     return res
 
 
-def get_in_nodes(node_id: str, edge_label: str, valid_nodes: bool):
+def get_in_nodes(node_id: str, edge_label: str, skip: int, limit: int, valid_nodes: bool):
     try:
         query = f"g.V('{node_id}').in('{edge_label}')"
+
+        if limit is not None:
+            query += f".range({skip}, {skip + limit})"
 
         if valid_nodes:
             query += ".has('valid', 'true')"

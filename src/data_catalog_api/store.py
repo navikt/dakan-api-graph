@@ -434,3 +434,24 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
     response["data"] = res
 
     return response
+
+
+def test_search(search_term):
+    try:
+        query = "g.V().hasLabel('begrep').has('term', "
+        query += f"TextP.containing('{search_term}'))"
+
+        query += ".has('valid', 'true')"
+
+        res = cosmosdb_conn.submit(query)
+
+    except ConnectionRefusedError as e:
+        logging.error(f"{e}")
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
+    if len(res) == 0:
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
+
+    transform_node_response(res)
+
+    return res

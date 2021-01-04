@@ -2,6 +2,7 @@ import logging
 import os
 import json
 import requests
+import math
 from json import JSONDecodeError
 from typing import List
 from data_catalog_api.log_metrics import metric_types
@@ -396,25 +397,39 @@ def set_azure_max_throughput(throughput):
     return json.loads(res.content)
 
 
-def get_nodes_by_label_test(label: str, skip: int, limit: int, valid_nodes: bool):
-    try:
-        query = f"g.V().hasLabel('{label}')"
+def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
+    response = {
+        "page": page,
+        "total_pages": 0,
+        "max_items_per_page": 500,
+        "total_items": "",
+        "data": ""
+    }
 
-        if limit is not None:
-            query += f".range({skip}, {skip + limit})"
+    limit = 500
+    skip = (page - 1) * limit
+
+    try:
+        query_count = f"g.V().hasLabel('{label}')"
+        query = f"g.V().hasLabel('{label}').range({skip}, {skip + limit})"
 
         if valid_nodes is True:
+            query_count += ".has('valid', 'true')"
             query += ".has('valid', 'true')"
 
-        query += ".count()"
+        query_count += ".count()"
+        response["total_items"] = cosmosdb_conn.submit(query_count)
+        response["total_pages"] = math.ceil(response["total_items"] / 500)
         res = cosmosdb_conn.submit(query)
 
     except ConnectionRefusedError as e:
         logging.error(f"{e}")
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
-    if len(res) == 0:
+    if len(response["total_items"] ) == 0:
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
-   # transform_node_response(res)
-    return res
+    transform_node_response(res)
+    response["data"] = res
+
+    return response

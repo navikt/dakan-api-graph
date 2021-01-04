@@ -122,7 +122,7 @@ def upsert_node_and_create_edge(payload: NodeRelationPayload, request: Request):
                             content={"Error": "This operation requires authorization"})
 
 
-@router.get("/nodes/test/{label}", response_model=List[Node], tags=["Node"])
+@router.get("/nodes/test/{label}", tags=["Node"])
 def get_nodes_by_label_test(label: str, skip: int = 0, limit: int = None, valid_nodes: bool = True):
     """
     Get nodes by label:

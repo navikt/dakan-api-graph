@@ -438,10 +438,9 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
 
 def test_search(search_term):
     try:
-        query = "g.V().hasLabel('begrep').has('term', "
+        query = "g.V().hasLabel('begrep').has('valid', 'true').has('term', "
+        query += f"TextP.containing('{search_term}'))" + ".or().has('definisjon', "
         query += f"TextP.containing('{search_term}'))"
-
-        query += ".has('valid', 'true')"
 
         res = cosmosdb_conn.submit(query)
 

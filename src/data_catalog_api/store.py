@@ -436,11 +436,15 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
     return response
 
 
-def test_search(search_term):
+def term_search(term_name, term_status):
     try:
-        query = "g.V().hasLabel('begrep').has('valid', 'true').has('term', "
-        query += f"TextP.containing('{search_term}'))" + ".or().has('definisjon', "
-        query += f"TextP.containing('{search_term}'))"
+        query = "g.V().hasLabel('begrep').has('valid', 'true')"
+
+        if term_status == 'godkjent':
+            query += ".has('status', 'Godkjent begrep')"
+
+        query += ".has('term', " + f"TextP.containing('{term_name}'))" + ".or().has('definisjon', "
+        query += f"TextP.containing('{term_name}'))"
 
         res = cosmosdb_conn.submit(query)
 
@@ -452,5 +456,10 @@ def test_search(search_term):
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     transform_node_response(res)
+
+    for term in res:
+        term.update({'term': term['properties']['term']})
+        term.update({'description': term['properties']['clean_definisjon']})
+        term.update({'status': term['properties']['status']})
 
     return res

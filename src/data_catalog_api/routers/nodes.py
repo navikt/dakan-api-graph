@@ -132,11 +132,10 @@ def get_nodes_by_label_test(label: str, page: int = 1, valid_nodes: bool = True)
     return store.get_nodes_by_label_test(label, page, valid_nodes)
 
 
-@router.get("/nodes/test/term/{search_term}", tags=["Node"])
-def get_nodes_by_label_test(search_term: str):
+@router.get("/terms/search", tags=["Term"])
+def get_nodes_by_label_test(term_name: str, term_status: str ='godkjent'):
     """
-    Get nodes by label:
+    Search term:
 
-    - **label**: label of node
     """
-    return store.test_search(search_term)
+    return store.term_search(term_name, term_status)

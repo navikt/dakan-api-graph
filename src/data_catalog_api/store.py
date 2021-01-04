@@ -427,7 +427,7 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
         logging.error(f"{e}")
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
-    if len(response["total_items"] ) == 0:
+    if len(response["total_items"]) == 0:
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     transform_node_response(res)

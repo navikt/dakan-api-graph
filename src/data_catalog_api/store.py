@@ -394,3 +394,27 @@ def set_azure_max_throughput(throughput):
                         headers={'x-functions-key': os.environ["azure_throughput_key"]})
 
     return json.loads(res.content)
+
+
+def get_nodes_by_label_test(label: str, skip: int, limit: int, valid_nodes: bool):
+    try:
+        query = f"g.V().hasLabel('{label}')"
+
+        if limit is not None:
+            query += f".range({skip}, {skip + limit})"
+
+        if valid_nodes is True:
+            query += ".has('valid', 'true')"
+
+        query += ".count()"
+        res = cosmosdb_conn.submit(query)
+
+    except ConnectionRefusedError as e:
+        logging.error(f"{e}")
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
+    if len(res) == 0:
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
+
+   # transform_node_response(res)
+    return res

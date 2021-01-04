@@ -133,7 +133,7 @@ def get_nodes_by_label_test(label: str, page: int = 1, valid_nodes: bool = True)
 
 
 @router.get("/terms/search", tags=["Term"])
-def get_nodes_by_label_test(term_name: str, term_status: str ='godkjent'):
+def term_search(term_name: str, term_status: str = 'godkjent'):
     """
     Search term:
 

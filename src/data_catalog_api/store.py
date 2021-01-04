@@ -418,7 +418,8 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
             query += ".has('valid', 'true')"
 
         query_count += ".count()"
-        response["total_items"] = cosmosdb_conn.submit(query_count)
+        total_nodes = cosmosdb_conn.submit(query_count)
+        response["total_items"] = total_nodes[0]
         response["total_pages"] = math.ceil(response["total_items"] / 500)
         res = cosmosdb_conn.submit(query)
 

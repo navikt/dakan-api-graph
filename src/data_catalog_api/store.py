@@ -440,11 +440,11 @@ def term_search(term_name, term_status):
     try:
         query = "g.V().hasLabel('begrep').has('valid', 'true')"
 
-        query += ".has('term', " + f"TextP.containing('{term_name}'))" + ".or().has('definisjon', "
-        query += f"TextP.containing('{term_name}'))"
-
         if term_status.lower() == 'godkjent':
             query += ".has('status', 'Godkjent begrep')"
+
+        query += ".has('term', " + f"TextP.containing('{term_name}'))" + ".or().has('definisjon', "
+        query += f"TextP.containing('{term_name}'))"
 
         res = cosmosdb_conn.submit(query)
 
@@ -459,6 +459,10 @@ def term_search(term_name, term_status):
 
     for term in res:
         term.update({'term': term['properties']['term']})
+        print(" ")
+        print(term)
+        print(term['properties']['clean_definisjon'])
+        print(" ")
         term.update({'description': term['properties']['clean_definisjon']})
         term.update({'status': term['properties']['status']})
 

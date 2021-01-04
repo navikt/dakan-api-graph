@@ -123,10 +123,10 @@ def upsert_node_and_create_edge(payload: NodeRelationPayload, request: Request):
 
 
 @router.get("/nodes/test/{label}", tags=["Node"])
-def get_nodes_by_label_test(label: str, skip: int = 0, limit: int = None, valid_nodes: bool = True):
+def get_nodes_by_label_test(label: str, page: int = 1, valid_nodes: bool = True):
     """
     Get nodes by label:
 
     - **label**: label of node
     """
-    return store.get_nodes_by_label_test(label, skip, limit, valid_nodes)
+    return store.get_nodes_by_label_test(label, page, valid_nodes)

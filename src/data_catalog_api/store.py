@@ -440,10 +440,8 @@ def term_search(term_name: str, term_status: str):
     try:
         query = "g.V().hasLabel('begrep').has('valid', 'true')"
 
-       #  if term_status.lower() == 'godkjent':
-       #     query += ".has('term_status', 'Godkjent begrep')"
-
-        query += f".has('lowercase_term', TextP.containing('{term_name.lower()}')).or().has('lowercase_clean_definisjon', " \
+        query += f".has('lowercase_term', TextP.containing('{term_name.lower()}')).or()" \
+                 f".has('lowercase_clean_definisjon', " \
                  f"TextP.containing('{term_name.lower()}'))"
 
         res = cosmosdb_conn.submit(query)
@@ -458,13 +456,16 @@ def term_search(term_name: str, term_status: str):
     transform_node_response(res)
 
     for term in res:
-        try:
-            term.update({'term': term['properties']['term']})
-            term.update({'description': term['properties']['clean_definisjon']})
-            term.update({'status': term['properties']['status']})
-        except:
-            print(" ")
-            print(term["properties"])
-            print(" ")
+        term.update({'term': term['properties']['term']})
+        term.update({'description': term['properties']['clean_definisjon']})
+        term.update({'status': term['properties']['status']})
 
-    return res
+    search_res = []
+    if term_status.lower() == 'godkjent':
+        for term in res:
+            if term["properties"]["status"] == "Godkjent begrep":
+                search_res.append(term)
+    else:
+        search_res = res
+
+    return search_res

@@ -438,7 +438,7 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
 
 def term_search(term_name: str, term_status: str):
     try:
-        query = "g.V().hasLabel('begrep').has('valid', 'true')"
+        query = "g.V().hasLabel('begrep')"
 
         #query += ".filter({it.getProperty('term')"
 
@@ -447,7 +447,7 @@ def term_search(term_name: str, term_status: str):
         #query += ".has('term', " + f"TextP.containing('{term_name}'))"
 
         if term_status.lower() == 'godkjent':
-            query += ".has('status', contains('Godkjent'))"
+            query += ".has('status', 'Godkjent begrep')"
 
         #+ ".or().has('definisjon', "
         #query += f"TextP.containing('{term_name}'))"
@@ -462,11 +462,12 @@ def term_search(term_name: str, term_status: str):
 
     search_res = []
     for term in res:
-        if term_name.lower() in term['properties']['term'].lower() or term_name.lower() in term['properties']['clean_definisjon'].lower():
-            term.update({'term': term['properties']['term']})
-            term.update({'description': term['properties']['clean_definisjon']})
-            term.update({'status': term['properties']['status']})
-            search_res.append(term)
+        if term['properties']['valid']:
+            if term_name.lower() in term['properties']['term'].lower() or term_name.lower() in term['properties']['clean_definisjon'].lower():
+                term.update({'term': term['properties']['term']})
+                term.update({'description': term['properties']['clean_definisjon']})
+                term.update({'status': term['properties']['status']})
+                search_res.append(term)
 
     if len(search_res) == 0:
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})

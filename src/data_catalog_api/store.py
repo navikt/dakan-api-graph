@@ -446,8 +446,8 @@ def term_search(term_name: str, term_status: str):
 
         #query += ".has('term', " + f"TextP.containing('{term_name}'))"
 
-        if term_status.lower() == 'godkjent':
-            query += ".has('status', 'Godkjent begrep')"
+        #if term_status.lower() == 'godkjent':
+         #   query += ".has('status', 'Godkjent begrep')"
 
         #+ ".or().has('definisjon', "
         #query += f"TextP.containing('{term_name}'))"

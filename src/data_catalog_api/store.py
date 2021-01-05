@@ -458,9 +458,6 @@ def term_search(term_name: str, term_status: str):
         logging.error(f"{e}")
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
-    if len(res) == 0:
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
-
     transform_node_response(res)
 
     search_res = []
@@ -470,5 +467,8 @@ def term_search(term_name: str, term_status: str):
             term.update({'description': term['properties']['clean_definisjon']})
             term.update({'status': term['properties']['status']})
             search_res.append(term)
+
+    if len(search_res) == 0:
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     return search_res

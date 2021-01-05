@@ -440,7 +440,7 @@ def term_search(term_name: str, term_status: str):
     try:
         query = "g.V().hasLabel('begrep').has('valid', 'true')"
 
-      #  if term_status.lower() == 'godkjent':
+       #  if term_status.lower() == 'godkjent':
        #     query += ".has('term_status', 'Godkjent begrep')"
 
         query += f".has('lowercase_term', TextP.containing('{term_name.lower()}')).or().has('lowercase_clean_definisjon', " \
@@ -458,11 +458,13 @@ def term_search(term_name: str, term_status: str):
     transform_node_response(res)
 
     for term in res:
-        term.update({'term': term['properties']['term']})
-        print(" ")
-        print(term["properties"])
-        print(" ")
-        term.update({'description': term['properties']['clean_definisjon']})
-        term.update({'status': term['properties']['status']})
+        try:
+            term.update({'term': term['properties']['term']})
+            term.update({'description': term['properties']['clean_definisjon']})
+            term.update({'status': term['properties']['status']})
+        except:
+            print(" ")
+            print(term["properties"])
+            print(" ")
 
     return res

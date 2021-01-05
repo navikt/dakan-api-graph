@@ -440,11 +440,11 @@ def term_search(term_name: str, term_status: str):
     try:
         query = "g.V().hasLabel('begrep').has('valid', 'true')"
 
-        if term_status.lower() == 'godkjent':
-            query += ".has('term_status', 'Godkjent begrep')"
+      #  if term_status.lower() == 'godkjent':
+       #     query += ".has('term_status', 'Godkjent begrep')"
 
-        query += f".has('lowercase_term', TextP.containing('{term_name}')).or().has('lowercase_clean_definisjon', " \
-                 f"TextP.containing('{term_name}'))"
+        query += f".has('lowercase_term', TextP.containing('{term_name.lower()}')).or().has('lowercase_clean_definisjon', " \
+                 f"TextP.containing('{term_name.lower()}'))"
 
         res = cosmosdb_conn.submit(query)
 

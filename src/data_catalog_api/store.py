@@ -447,7 +447,7 @@ def term_search(term_name: str, term_status: str):
         #query += ".has('term', " + f"TextP.containing('{term_name}'))"
 
         if term_status.lower() == 'godkjent':
-            query += ".has('status', 'Godkjent begrep')"
+            query += ".has('status', contains('Godkjent'))"
 
         #+ ".or().has('definisjon', "
         #query += f"TextP.containing('{term_name}'))"
@@ -466,11 +466,9 @@ def term_search(term_name: str, term_status: str):
     search_res = []
     for term in res:
         if term_name.lower() in term['properties']['term'].lower() or term_name.lower() in term['properties']['clean_definisjon'].lower():
+            term.update({'term': term['properties']['term']})
+            term.update({'description': term['properties']['clean_definisjon']})
+            term.update({'status': term['properties']['status']})
             search_res.append(term)
-
-    for term in search_res:
-        term.update({'term': term['properties']['term']})
-        term.update({'description': term['properties']['clean_definisjon']})
-        term.update({'status': term['properties']['status']})
 
     return search_res

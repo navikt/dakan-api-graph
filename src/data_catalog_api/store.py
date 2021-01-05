@@ -442,12 +442,12 @@ def term_search(term_name: str, term_status: str):
 
         query += ".filter({it.getProperty('term')"
 
-        query += f".contains('{term_name}')" + "})"
+        #query += f".contains('{term_name}')" + "})"
 
         #query += ".has('term', " + f"TextP.containing('{term_name}'))"
 
-        #if term_status.lower() == 'godkjent':
-        #    query += ".has('status', 'Godkjent begrep')"
+        if term_status.lower() == 'godkjent':
+            query += ".has('status', 'Godkjent begrep')"
 
         #+ ".or().has('definisjon', "
         #query += f"TextP.containing('{term_name}'))"
@@ -463,9 +463,14 @@ def term_search(term_name: str, term_status: str):
 
     transform_node_response(res)
 
+    search_res = []
     for term in res:
+        if term_name.lower() in term['properties']['term'].lower() or term_name.lower() in term['properties']['clean_definisjon'].lower():
+            search_res.append(term)
+
+    for term in search_res:
         term.update({'term': term['properties']['term']})
         term.update({'description': term['properties']['clean_definisjon']})
         term.update({'status': term['properties']['status']})
 
-    return res
+    return search_res

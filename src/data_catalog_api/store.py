@@ -438,19 +438,13 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
 
 def term_search(term_name: str, term_status: str):
     try:
-        query = "g.V().hasLabel('begrep')"
+        query = "g.V().hasLabel('begrep').has('valid', 'true')"
 
-        #query += ".filter({it.getProperty('term')"
+        if term_status.lower() == 'godkjent':
+            query += ".has('term_status', 'Godkjent begrep')"
 
-        #query += f".contains('{term_name}')" + "})"
-
-        #query += ".has('term', " + f"TextP.containing('{term_name}'))"
-
-        #if term_status.lower() == 'godkjent':
-         #   query += ".has('status', 'Godkjent begrep')"
-
-        #+ ".or().has('definisjon', "
-        #query += f"TextP.containing('{term_name}'))"
+        query += f".has('lowercase_term', TextP.containing('{term_name}')).or().has('lowercase_clean_definisjon', " \
+                 f"TextP.containing('{term_name}'))"
 
         res = cosmosdb_conn.submit(query)
 
@@ -458,18 +452,14 @@ def term_search(term_name: str, term_status: str):
         logging.error(f"{e}")
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
-    transform_node_response(res)
-
-    search_res = []
-    for term in res:
-        if term['properties']['valid']:
-            if term_name.lower() in term['properties']['term'].lower() or term_name.lower() in term['properties']['clean_definisjon'].lower():
-                term.update({'term': term['properties']['term']})
-                term.update({'description': term['properties']['clean_definisjon']})
-                term.update({'status': term['properties']['status']})
-                search_res.append(term)
-
-    if len(search_res) == 0:
+    if len(res) == 0:
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
-    return search_res
+    transform_node_response(res)
+
+    for term in res:
+        term.update({'term': term['properties']['term']})
+        term.update({'description': term['properties']['clean_definisjon']})
+        term.update({'status': term['properties']['status']})
+
+    return res

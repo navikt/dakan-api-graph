@@ -401,6 +401,7 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
     response = {
         "page": page,
         "total_pages": 0,
+        "has_next_page": False,
         "max_items_per_page": 500,
         "total_items": "",
         "data": ""
@@ -422,6 +423,9 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
         response["total_items"] = total_nodes[0]
         response["total_pages"] = math.ceil(response["total_items"] / 500)
         res = cosmosdb_conn.submit(query)
+
+        if page < response["total_pages"]:
+            response["has_next_page"] = True
 
     except ConnectionRefusedError as e:
         logging.error(f"{e}")

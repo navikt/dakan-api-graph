@@ -436,14 +436,14 @@ def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
     return response
 
 
-def term_search(term_name, term_status):
+def term_search(term_name: str, term_status: str):
     try:
         query = "g.V().hasLabel('begrep').has('valid', 'true')"
 
         query += ".has('term', " + f"TextP.containing('{term_name}'))"
 
-        if term_status.lower() == 'godkjent':
-            query += ".has('status', 'Godkjent begrep')"
+        # if term_status.lower() == 'godkjent':
+        #     query += ".has('status', 'Godkjent begrep')"
 
         #+ ".or().has('definisjon', "
         #query += f"TextP.containing('{term_name}'))"

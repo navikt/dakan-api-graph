@@ -440,10 +440,14 @@ def term_search(term_name: str, term_status: str):
     try:
         query = "g.V().hasLabel('begrep').has('valid', 'true')"
 
-        query += ".has('term', " + f"TextP.containing('{term_name}'))"
+        query += ".filter{it.get().value('term').toLowerCase()"
 
-        # if term_status.lower() == 'godkjent':
-        #     query += ".has('status', 'Godkjent begrep')"
+        query += f" == {term_name}" + "}"
+
+        #query += ".has('term', " + f"TextP.containing('{term_name}'))"
+
+        #if term_status.lower() == 'godkjent':
+        #    query += ".has('status', 'Godkjent begrep')"
 
         #+ ".or().has('definisjon', "
         #query += f"TextP.containing('{term_name}'))"

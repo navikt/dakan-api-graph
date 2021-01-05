@@ -459,6 +459,9 @@ def term_search(term_name: str, term_status: str):
 
     for term in res:
         term.update({'term': term['properties']['term']})
+        print(" ")
+        print(term["properties"])
+        print(" ")
         term.update({'description': term['properties']['clean_definisjon']})
         term.update({'status': term['properties']['status']})
 

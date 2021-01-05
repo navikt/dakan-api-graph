@@ -473,3 +473,31 @@ def term_search(term_name: str, term_status: str):
         search_res = res
 
     return search_res
+
+
+def get_term_by_id(node_id: str):
+    try:
+        res = cosmosdb_conn.submit(f"g.V('{node_id}')")
+    except ConnectionRefusedError:
+        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
+
+    if len(res) == 0:
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
+
+    if len(res) > 1:
+        raise MultipleNodesInDbError(node_id)
+    else:
+        transform_node_response(res)
+
+        term_node = {
+            "description": res["properties"]["clean_definisjon"],
+            "id": res["id"],
+            "status": res["properties"]["status"],
+            "term": res["properties"]["term"],
+            "valid": res["properties"]["valid"],
+            "valid_from": res["properties"]["valid_from"],
+            "valid_to": res["properties"]["valid_to"],
+            "prop": res["properties"]
+        }
+
+        return term_node

@@ -132,7 +132,7 @@ def get_nodes_by_label_test(label: str, page: int = 1, valid_nodes: bool = True)
     return store.get_nodes_by_label_test(label, page, valid_nodes)
 
 
-@router.get("/terms/search", tags=["Term"])
+@router.get("/term/search", tags=["Term"])
 def term_search(term_name: str, term_status: str = 'godkjent'):
     """
     Search term:
@@ -147,4 +147,4 @@ def get_term_by_id(term_id: str):
     Get term by id:
 
     """
-    return store.get_node_by_id(term_id)
+    return store.get_term_by_id(term_id)

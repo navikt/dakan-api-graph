@@ -139,3 +139,12 @@ def term_search(term_name: str, term_status: str = 'godkjent'):
 
     """
     return store.term_search(term_name, term_status)
+
+
+@router.get("/terms/{term_id}", tags=["Term"])
+def get_term_by_id(term_id: str):
+    """
+    Get term by id:
+
+    """
+    return store.get_node_by_id(term_id)

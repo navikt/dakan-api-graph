@@ -500,4 +500,4 @@ def get_term_by_id(node_id: str):
             "prop": res["properties"]
         }
 
-        return term_node
+        return [term_node]

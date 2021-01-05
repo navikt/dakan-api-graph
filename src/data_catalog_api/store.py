@@ -490,14 +490,14 @@ def get_term_by_id(node_id: str):
         transform_node_response(res)
 
         term_node = {
-            "description": res["properties"]["clean_definisjon"],
-            "id": res["id"],
-            "status": res["properties"]["status"],
-            "term": res["properties"]["term"],
-            "valid": res["properties"]["valid"],
-            "valid_from": res["properties"]["valid_from"],
-            "valid_to": res["properties"]["valid_to"],
-            "prop": res["properties"]
+            "description": res[0]["properties"]["clean_definisjon"],
+            "id": res[0]["id"],
+            "status": res[0]["properties"]["status"],
+            "term": res[0]["properties"]["term"],
+            "valid": res[0]["properties"]["valid"],
+            "valid_from": res[0]["properties"]["valid_from"],
+            "valid_to": res[0]["properties"]["valid_to"],
+            "prop": res[0]["properties"]
         }
 
         return [term_node]

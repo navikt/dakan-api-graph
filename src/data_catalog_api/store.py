@@ -442,7 +442,7 @@ def term_search(term_name: str, term_status: str):
 
         query += ".filter{it.get().value('term').toLowerCase()"
 
-        query += f" == {term_name}" + "}"
+        query += f" == '{term_name}'" + "}"
 
         #query += ".has('term', " + f"TextP.containing('{term_name}'))"
 

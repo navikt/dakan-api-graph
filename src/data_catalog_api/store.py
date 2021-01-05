@@ -440,7 +440,7 @@ def term_search(term_name: str, term_status: str):
     try:
         query = "g.V().hasLabel('begrep').has('valid', 'true')"
 
-        query += ".filter({it.get().value('term').toLowerCase()"
+        query += ".filter({it.getProperty('term')"
 
         query += f".contains('{term_name}')" + "})"
 

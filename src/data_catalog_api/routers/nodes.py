@@ -27,13 +27,13 @@ def get_node_by_id(id: str):
 
 @router.get("/nodes/{label}", response_model=List[Node], tags=["Node"])
 @metric_types.REQUEST_TIME_GET_NODE_BY_LABEL.time()
-def get_nodes_by_label(label: str, skip: int = 0, limit: int = None, valid_nodes: bool = True):
+def get_nodes_by_label(label: str, page: int = 1, valid_nodes: bool = True):
     """
     Get nodes by label:
 
     - **label**: label of node
     """
-    return store.get_nodes_by_label(label, skip, limit, valid_nodes)
+    return store.get_nodes_by_label(label, page, valid_nodes)
 
 
 @router.get("/node/out/{node_id}/{edge_label}", response_model=List[Node], tags=["Node"])
@@ -120,16 +120,6 @@ def upsert_node_and_create_edge(payload: NodeRelationPayload, request: Request):
     else:
         return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED,
                             content={"Error": "This operation requires authorization"})
-
-
-@router.get("/nodes/test/{label}", tags=["Node"])
-def get_nodes_by_label_test(label: str, page: int = 1, valid_nodes: bool = True):
-    """
-    Get nodes by label:
-
-    - **label**: label of node
-    """
-    return store.get_nodes_by_label_test(label, page, valid_nodes)
 
 
 @router.get("/term/search", tags=["Term"])

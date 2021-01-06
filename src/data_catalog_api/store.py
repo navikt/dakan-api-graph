@@ -56,30 +56,49 @@ def get_node_by_id(node_id: str):
         return res[0]
 
 
-def get_nodes_by_label(label: str, skip: int, limit: int, valid_nodes: bool):
-    try:
-        query = f"g.V().hasLabel('{label}')"
+def get_nodes_by_label(label: str, page: int, valid_nodes: bool):
+    response = {
+        "page": page,
+        "total_pages": 0,
+        "has_next_page": False,
+        "max_items_per_page": 500,
+        "total_items": "",
+        "data": ""
+    }
 
-        if limit is not None:
-            query += f".range({skip}, {skip + limit})"
+    limit = 500
+    skip = (page - 1) * limit
+
+    try:
+        query_count = f"g.V().hasLabel('{label}')"
+        query = f"g.V().hasLabel('{label}').range({skip}, {skip + limit})"
 
         if valid_nodes is True:
+            query_count += ".has('valid', 'true')"
             query += ".has('valid', 'true')"
 
+        query_count += ".count()"
+        total_nodes = cosmosdb_conn.submit(query_count)
+        response["total_items"] = total_nodes[0]
+        response["total_pages"] = math.ceil(response["total_items"] / 500)
         res = cosmosdb_conn.submit(query)
+
+        if page < response["total_pages"]:
+            response["has_next_page"] = True
 
     except ConnectionRefusedError as e:
         metric_types.GET_NODE_BY_LABEL_CONNECTION_REFUSED.inc()
         logging.error(f"{e}")
         return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
 
-    if len(res) == 0:
+    if response["total_items"] == 0:
         metric_types.GET_NODE_BY_LABEL_NOT_FOUND.inc()
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
 
     transform_node_response(res)
+    response["data"] = res
     metric_types.GET_NODE_BY_LABEL_SUCCESS.inc()
-    return res
+    return response
 
 
 def upsert_node(nodes: List[Node]):
@@ -395,49 +414,6 @@ def set_azure_max_throughput(throughput):
                         headers={'x-functions-key': os.environ["azure_throughput_key"]})
 
     return json.loads(res.content)
-
-
-def get_nodes_by_label_test(label: str, page: int, valid_nodes: bool):
-    response = {
-        "page": page,
-        "total_pages": 0,
-        "has_next_page": False,
-        "max_items_per_page": 500,
-        "total_items": "",
-        "data": ""
-    }
-
-    limit = 500
-    skip = (page - 1) * limit
-
-    try:
-        query_count = f"g.V().hasLabel('{label}')"
-        query = f"g.V().hasLabel('{label}').range({skip}, {skip + limit})"
-
-        if valid_nodes is True:
-            query_count += ".has('valid', 'true')"
-            query += ".has('valid', 'true')"
-
-        query_count += ".count()"
-        total_nodes = cosmosdb_conn.submit(query_count)
-        response["total_items"] = total_nodes[0]
-        response["total_pages"] = math.ceil(response["total_items"] / 500)
-        res = cosmosdb_conn.submit(query)
-
-        if page < response["total_pages"]:
-            response["has_next_page"] = True
-
-    except ConnectionRefusedError as e:
-        logging.error(f"{e}")
-        return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content={"Error": "Connection refused"})
-
-    if response["total_items"] == 0:
-        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content={})
-
-    transform_node_response(res)
-    response["data"] = res
-
-    return response
 
 
 def term_search(term_name: str, term_status: str):

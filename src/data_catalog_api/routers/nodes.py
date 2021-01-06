@@ -1,6 +1,6 @@
 from typing import List
 from data_catalog_api import store
-from data_catalog_api.models.nodes import Node, NodeResponse
+from data_catalog_api.models.nodes import Node, NodeResponse, PagedNodes
 from data_catalog_api.models.requests import NodeRelationPayload
 from data_catalog_api.utils import authentication
 from fastapi import APIRouter
@@ -25,7 +25,7 @@ def get_node_by_id(id: str):
     return store.get_node_by_id(id)
 
 
-@router.get("/nodes/{label}", response_model=List[Node], tags=["Node"])
+@router.get("/nodes/{label}", response_model=PagedNodes, tags=["Node"])
 @metric_types.REQUEST_TIME_GET_NODE_BY_LABEL.time()
 def get_nodes_by_label(label: str, page: int = 1, valid_nodes: bool = True):
     """

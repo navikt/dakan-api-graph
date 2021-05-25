@@ -32,5 +32,5 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: naiserator.yaml
-          VARS: config-dev-fss.json
+          RESOURCE: .nais/nais.yaml
+          VARS: .nais/config-dev-fss.json

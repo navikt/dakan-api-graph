@@ -1,4 +1,4 @@
-from data_catalog_api import __version__
+from dakan_api_graph import __version__
 
 
 def test_version():

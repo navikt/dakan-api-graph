@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi.staticfiles import StaticFiles
-from data_catalog_api.routers import nodes, edges, health, azure_ad, metrics
+from dakan_api_graph.routers import nodes, edges, health, azure_ad, metrics
 from fastapi.openapi.docs import get_swagger_ui_html
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware

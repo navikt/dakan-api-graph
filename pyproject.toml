@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "data-catalog-api"
+name = "dakan-api_graph"
 version = "0.0.1"
 description = ""
 authors = ["pbencze <paul.bencze@nav.no>"]

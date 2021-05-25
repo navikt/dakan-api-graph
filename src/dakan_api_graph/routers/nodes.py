@@ -1,14 +1,14 @@
 from typing import List
-from data_catalog_api import store
-from data_catalog_api.models.nodes import Node, NodeResponse, PagedNodes
-from data_catalog_api.models.requests import NodeRelationPayload
-from data_catalog_api.utils import authentication
+from dakan_api_graph import store
+from dakan_api_graph.models.nodes import Node, NodeResponse, PagedNodes
+from dakan_api_graph.models.requests import NodeRelationPayload
+from dakan_api_graph.utils import authentication
 from fastapi import APIRouter
-from data_catalog_api.log_metrics import metric_types
+from dakan_api_graph.log_metrics import metric_types
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-from data_catalog_api.utils.logger import Logger
+from dakan_api_graph.utils.logger import Logger
 
 logger = Logger()
 router = APIRouter()

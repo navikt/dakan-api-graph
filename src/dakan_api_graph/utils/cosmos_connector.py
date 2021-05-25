@@ -1,7 +1,7 @@
 import os
 import tornado.iostream
 import tornado.httpclient
-from data_catalog_api.utils.logger import Logger
+from dakan_api_graph.utils.logger import Logger
 
 from dotenv import load_dotenv
 from gremlin_python.driver import client, serializer, protocol

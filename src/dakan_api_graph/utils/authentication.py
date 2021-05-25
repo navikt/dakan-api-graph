@@ -1,8 +1,8 @@
 import os
 import requests
-from data_catalog_api.utils.logger import Logger
+from dakan_api_graph.utils.logger import Logger
 from typing import Mapping
-from data_catalog_api.exceptions.exceptions import EnvironmentVariableNotSet
+from dakan_api_graph.exceptions.exceptions import EnvironmentVariableNotSet
 
 logger = Logger()
 

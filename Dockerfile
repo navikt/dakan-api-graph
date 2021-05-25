@@ -11,4 +11,4 @@ RUN pip3 install poetry && \
 USER apprunner
 
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
-CMD ["uvicorn", "data_catalog_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "warning"]
+CMD ["uvicorn", "dakan_api_graph.main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "warning"]

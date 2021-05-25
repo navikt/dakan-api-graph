@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from data_catalog_api.models.nodes import Node
+from dakan_api_graph.models.nodes import Node
 
 
 class NodeRelationPayload(BaseModel):

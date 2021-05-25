@@ -5,15 +5,15 @@ import requests
 import math
 from json import JSONDecodeError
 from typing import List
-from data_catalog_api.log_metrics import metric_types
-from data_catalog_api.models.edges import Edge
-from data_catalog_api.models.nodes import Node, NodeResponse
-from data_catalog_api.models.requests import NodeRelationPayload
-from data_catalog_api.utils.cosmos_connector import CosmosConnector
-from data_catalog_api.utils.logger import Logger
+from dakan_api_graph.log_metrics import metric_types
+from dakan_api_graph.models.edges import Edge
+from dakan_api_graph.models.nodes import Node, NodeResponse
+from dakan_api_graph.models.requests import NodeRelationPayload
+from dakan_api_graph.utils.cosmos_connector import CosmosConnector
+from dakan_api_graph.utils.logger import Logger
 from fastapi import status
 from fastapi.responses import JSONResponse
-from data_catalog_api.exceptions.exceptions import MultipleNodesInDbError
+from dakan_api_graph.exceptions.exceptions import MultipleNodesInDbError
 from datetime import datetime
 
 logger = Logger()

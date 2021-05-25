@@ -1,15 +1,15 @@
 import json
 import os
 import requests
-from data_catalog_api import store
+from dakan_api_graph import store
 from starlette import status
 from starlette.requests import Request
 from fastapi import APIRouter
 from authlib.integrations.starlette_client import OAuth
 from starlette.responses import JSONResponse, RedirectResponse
-from data_catalog_api.utils.logger import Logger
-from data_catalog_api.utils import authentication
-from data_catalog_api.models.throughput import Throughput
+from dakan_api_graph.utils.logger import Logger
+from dakan_api_graph.utils import authentication
+from dakan_api_graph.models.throughput import Throughput
 
 
 logger = Logger()

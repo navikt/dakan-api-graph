@@ -7,7 +7,7 @@ on:
       - '*.*.*'
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/data-catalog-api:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ github.event.repository.name }}:${{ github.sha }}
 jobs:
   build:
     name: build and push docker container

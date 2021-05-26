@@ -11,7 +11,7 @@ from starlette.middleware.sessions import SessionMiddleware
 app = FastAPI()
 subapi = FastAPI(docs_url='/docs', swagger_static={"favicon": "/static/favicon.png"},
                  openapi_prefix="/cosmosdb", default_response_class=ORJSONResponse)
-app.mount("/static", StaticFiles(directory="src/data_catalog_api/static"), name="static")
+app.mount("/static", StaticFiles(directory="src/dakan_api_graph/static"), name="static")
 app.mount("/cosmosdb", subapi)
 
 app.add_middleware(

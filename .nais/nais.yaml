@@ -1,12 +1,12 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: {{application_name}}
-  namespace: dataplattform
+  name: {{ application_name }}
+  namespace: {{ team }}
   labels:
-    team: {{team}}
+    team: {{ team }}
 spec:
-  image: {{image}}
+  image: {{ image }}
   port: 8000
   replicas:
     min: 2
@@ -24,24 +24,14 @@ spec:
     initialDelay: 5
     periodSeconds: 5
     failureThreshold: 30
+  envFrom:
+    - secret: cosmos-secret
   env:
     - name: INGRESS
-      value: {{ingress}}
+      value: {{ ingress }}
   ingresses:
-    - {{ingress}}
-    - {{ingress_nais_io}}
+    - {{ ingress }}
   leaderElection: false
-  vault:
-    enabled: true
   prometheus:
     enabled: true
     path: /cosmosdb/metrics
-  istio:
-    enabled: false
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 2Gi
-    requests:
-      cpu: 1000m
-      memory: 2Gi

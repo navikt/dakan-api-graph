@@ -1,4 +1,4 @@
-name: Build and deploy to dev-fss
+name: Build and deploy to dev-gcp
 on:
   push:
     branches:
@@ -22,19 +22,6 @@ jobs:
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
 
-  deploy-dev-fss:
-    name: deploy to nais dev-fss cluster
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: .nais/nais.yaml
-          VARS: .nais/config-dev-fss.json
-
   deploy-dev-gcp:
     name: deploy to nais dev-gcp cluster
     needs: build
@@ -45,5 +32,5 @@ jobs:
       env:
         APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
         CLUSTER: dev-gcp
-        RESOURCE: .nais/nais_gcp.yaml
+        RESOURCE: .nais/nais.yaml
         VARS: .nais/config-dev-gcp.json

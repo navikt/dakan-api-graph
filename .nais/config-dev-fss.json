@@ -1,6 +1,0 @@
-{
-  "application_name": "dakan-api-graph",
-  "ingress": "https://data-test.nais.preprod.local/cosmosdb",
-  "ingress_nais_io": "https://data-test.dev-fss.nais.io/cosmosdb",
-  "team": "dataplattform"
-}

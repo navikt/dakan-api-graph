@@ -5,6 +5,9 @@ metadata:
   namespace: {{ team }}
   labels:
     team: {{ team }}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "256M"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{ image }}
   port: 8000

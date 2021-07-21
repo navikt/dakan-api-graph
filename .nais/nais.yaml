@@ -38,6 +38,7 @@ spec:
     - name: AZURE_REPLY_URL
       value: {{ azure_reply_url }}
   ingresses:
+    - {{ ingress_nais_io }}
     - {{ ingress }}
   leaderElection: false
   prometheus:

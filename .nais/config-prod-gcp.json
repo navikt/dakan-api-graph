@@ -1,6 +1,7 @@
 {
   "application_name": "dakan-api-graph",
-  "ingress": "https://nada-cosmosdb.prod-gcp.nais.io/cosmosdb",
+  "ingress_nais_io": "https://nada-cosmosdb.prod-gcp.nais.io/cosmosdb",
+  "ingress": "https://nada-cosmosdb.intern.nav.no/cosmosdb",
   "team": "dataplattform",
   "azure_reply_url": "https://data.adeo.no/cosmosdb/auth"
 }

@@ -22,7 +22,7 @@ oauth.register(
     'azure',
     client_id=os.environ["AZURE_APP_CLIENT_ID"],
     client_secret=os.environ["AZURE_APP_CLIENT_SECRET"],
-    server_metadata_url=os.environ["AZURE_AAPP_WELL_KNOWN_URL"],
+    server_metadata_url=os.environ["AZURE_APP_WELL_KNOWN_URL"],
     client_kwargs={'scope': 'openid email profile https://graph.microsoft.com/.default'}
 )
 

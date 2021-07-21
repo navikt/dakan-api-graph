@@ -20,10 +20,9 @@ router = APIRouter()
 
 oauth.register(
     'azure',
-    client_id=os.environ["client_id"],
-    client_secret=os.environ["client_secret"],
-    server_metadata_url='https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0/.well-known/'
-                        'openid-configuration',
+    client_id=os.environ["AZURE_APP_CLIENT_ID"],
+    client_secret=os.environ["AZURE_APP_CLIENT_SECRET"],
+    server_metadata_url=os.environ["AZURE_AAPP_WELL_KNOWN_URL"],
     client_kwargs={'scope': 'openid email profile https://graph.microsoft.com/.default'}
 )
 
@@ -43,9 +42,10 @@ async def set_azure_max_throughput(throughput: Throughput, request: Request):
 
 @router.get("/login", tags=["Azure"])
 async def login_via_azure(request: Request, redirect_url: str):
-    redirect_uri = f'{os.environ["INGRESS"]}/auth'
-    response = await oauth.azure.authorize_redirect(request, redirect_uri)
+    response = await oauth.azure.authorize_redirect(request, os.environ["AZURE_REPLY_URL"])
     response.set_cookie(key="Redirect-url", value=redirect_url)
+    response.delete_cookie(key="ClientUser")
+    response.delete_cookie(key="ClientToken")
     return response
 
 
@@ -68,10 +68,7 @@ async def auth_via_azure(request: Request):
         "email": user["mail"]
     }
 
-    # user = await oauth.azure.parse_id_token(request, token)
-    response.delete_cookie(key="ClientUser")
     response.set_cookie(key="ClientUser", value=json.dumps(client_user), max_age=3600, expires=3600)
-    response.delete_cookie(key="ClientToken")
     response.set_cookie(key="ClientToken", value=token.get("access_token"), max_age=3600, expires=3600)
     return response
 

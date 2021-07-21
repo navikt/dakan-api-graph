@@ -23,7 +23,7 @@ app.add_middleware(
 )
 
 # we need this to save temporary code & state in session
-app.add_middleware(SessionMiddleware, secret_key=os.environ["session_secret_key"])
+app.add_middleware(SessionMiddleware, secret_key=os.environ["session_secret_key"], session_cookie="cosmos_session")
 
 
 @subapi.get("/docs", include_in_schema=False)

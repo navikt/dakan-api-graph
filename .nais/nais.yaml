@@ -9,6 +9,11 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "256M"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
+  azure:
+    application:
+      enabled: true
+      replyURLs:
+        - {{ azure_reply_url }}
   image: {{ image }}
   port: 8000
   replicas:
@@ -30,8 +35,8 @@ spec:
   envFrom:
     - secret: cosmos-secret
   env:
-    - name: INGRESS
-      value: {{ ingress }}
+    - name: AZURE_REPLY_URL
+      value: {{ azure_reply_url }}
   ingresses:
     - {{ ingress }}
   leaderElection: false
